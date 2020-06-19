@@ -8,7 +8,8 @@ defmodule Games.Application do
   def start(_type, _args) do
     children = [
       # Start the PubSub system
-      {Phoenix.PubSub, name: Games.PubSub}
+      {Phoenix.PubSub, name: Games.PubSub},
+      %{id: Cachex, start: {Cachex, :start_link, [:reserved_names]}}
       # Start a worker by calling: Games.Worker.start_link(arg)
       # {Games.Worker, arg}
     ]

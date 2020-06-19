@@ -1,0 +1,9 @@
+Login
+
+<%= form_for @conn, Routes.authentication_path(@conn, :log_in), fn f -> %>
+  <label>
+    Name: <%= text_input f, :name %>
+  </label>
+
+  <%= submit "Submit" %>
+<% end %>
