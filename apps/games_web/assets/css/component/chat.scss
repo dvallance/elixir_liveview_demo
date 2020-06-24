@@ -1,0 +1,7 @@
+.chat {
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: auto;
+  height: 25em; 
+  resize: vertical;
+}

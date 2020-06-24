@@ -1,0 +1,17 @@
+<div class="chat" phx-hook="Chat">
+  <%= for message <- @messages do %>
+    <div class="chat__message">
+      <%# 
+        Messages have a type so we can expand on how to display them later
+        on, but for now I simply render the text given.
+      %>
+      <%= message.text %>
+    </div>
+  <% end %>
+</div>
+
+<%= f = form_for :chat, "#", phx_submit: "post_message", id: "chat_form", phx_hook: "ChatForm" %>
+  <%= text_input f, :text %> 
+  <%= submit "Save", style: "display:none" %>
+</form>
+

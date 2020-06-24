@@ -9,7 +9,8 @@ defmodule Games.Application do
     children = [
       # Start the PubSub system
       {Phoenix.PubSub, name: Games.PubSub},
-      %{id: Cachex, start: {Cachex, :start_link, [:reserved_names]}}
+      %{id: Cachex, start: {Cachex, :start_link, [:reserved_names]}},
+      Games.ChatAgent
       # Start a worker by calling: Games.Worker.start_link(arg)
       # {Games.Worker, arg}
     ]

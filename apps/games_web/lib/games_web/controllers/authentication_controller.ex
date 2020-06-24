@@ -11,7 +11,7 @@ defmodule GamesWeb.AuthenticationController do
     |> redirect(to: Routes.authentication_path(conn, :login))
   end
 
-  def log_in(conn, %{"name" => name} = params) do
+  def log_in(conn, %{"name" => name} = _params) do
     with {:ok, name} <- clean_name(name),
          :ok <- validate_length_of_name(name),
          :ok <- available_name(name) do
@@ -26,7 +26,7 @@ defmodule GamesWeb.AuthenticationController do
     end
   end
 
-  defp clean_name(name), do: {:ok, String.strip(name)}
+  defp clean_name(name), do: {:ok, String.trim(name)}
 
   defp validate_length_of_name(name) do
     name
@@ -56,7 +56,7 @@ defmodule GamesWeb.AuthenticationController do
     end
   end
 
-  defp presence_of_name?(name) do
+  defp presence_of_name?(_name) do
     # TODO complete looking for users when I add presence 
     # GamesWeb.Presence.list("users")
     # |> IO.inspect(label: "Presence")

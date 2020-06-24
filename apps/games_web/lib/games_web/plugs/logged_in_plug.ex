@@ -1,14 +1,14 @@
 defmodule GamesWeb.LoggedInPlug do
-  import Plug.Conn
+  import Plug.Conn, only: [get_session: 2, halt: 1]
 
   def init(options), do: options
 
   def call(conn, _opt) do
-    case Plug.Conn.get_session(conn, :current_user) do
+    case get_session(conn, :current_user) do
       nil ->
         conn
         |> Phoenix.Controller.redirect(to: "/authentication/login")
-        |> Plug.Conn.halt()
+        |> halt()
 
       _current_user ->
         conn
