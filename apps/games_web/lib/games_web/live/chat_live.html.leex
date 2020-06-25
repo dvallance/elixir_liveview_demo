@@ -5,7 +5,9 @@
         Messages have a type so we can expand on how to display them later
         on, but for now I simply render the text given.
       %>
-      <%= message.text %>
+      <span class="chat__username"><%= message.user.name %></span>
+      <span class="chat__divider">&ndash;</span>
+      <span class="chat__text"><%= message.text %></span>
     </div>
   <% end %>
 </div>
@@ -14,4 +16,10 @@
   <%= text_input f, :text %> 
   <%= submit "Save", style: "display:none" %>
 </form>
+
+<div class="users">
+  <%= for user <- @users do %>
+    <div class="user__name"><%= user.name %></div>
+  <% end %>
+</div>
 

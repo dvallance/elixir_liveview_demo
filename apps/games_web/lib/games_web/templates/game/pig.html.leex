@@ -1,0 +1,25 @@
+<div id="game">
+  <%= if Games.Pig.opponent_assigned?(@game_server.game) do %>
+    <%= for player <- @game_server.game.players do %>
+      <%= if Games.Pig.players_roll_for_first_turn(@game_server.game, player) do %>
+        <div>
+          <%= player.name %>
+        </div>
+        <div phx-click="roll" phx-target="#game">
+        </div>
+        <button phx-click="lock_in_points" phx-target="#game" <%= unless Games.Pig.turn?(@game_server.game, @current_user), do: :disabled %>>Lock in Points!</button>
+        <div>Total Score</div>
+        <div></div> 
+      <% else %>
+        <button phx-click="roll_for_first_turn" phx-target="#game">"Need to roll!!!!!!!!!!!!!</button>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= render GamesWeb.GameView, "pig/need_opponent.html", assigns %>
+  <% end %>
+
+  <pre>
+    <%= inspect(assigns, limit: :infinity, printable_limit: :infinity, pretty: true) %>
+  </pre>
+
+</div>

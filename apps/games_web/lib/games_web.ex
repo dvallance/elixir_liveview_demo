@@ -31,7 +31,8 @@ defmodule GamesWeb do
     quote do
       use Phoenix.View,
         root: "lib/games_web/templates",
-        namespace: GamesWeb
+        namespace: GamesWeb,
+        pattern: "**/*"
 
       # Import convenience functions from controllers
       import Phoenix.Controller,

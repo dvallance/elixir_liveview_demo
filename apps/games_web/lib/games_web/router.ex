@@ -24,7 +24,8 @@ defmodule GamesWeb.Router do
 
   scope "/games", GamesWeb do
     pipe_through [:browser, GamesWeb.LoggedInPlug]
-    live "/", PageLive, :index, as: :games
+    #live "/", PageLive, :index
+    live "/", GameLive, :index
   end
 
   # Other scopes may use custom stacks.

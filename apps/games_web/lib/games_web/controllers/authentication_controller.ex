@@ -1,5 +1,6 @@
 defmodule GamesWeb.AuthenticationController do
   use GamesWeb, :controller
+  alias GamesWeb.SessionHelper
 
   def login(conn, _params) do
     render(conn, "login.html")
@@ -7,7 +8,7 @@ defmodule GamesWeb.AuthenticationController do
 
   def log_out(conn, _params) do
     conn
-    |> delete_session(:current_user)
+    |> SessionHelper.delete_current_user()
     |> redirect(to: Routes.authentication_path(conn, :login))
   end
 
@@ -16,8 +17,8 @@ defmodule GamesWeb.AuthenticationController do
          :ok <- validate_length_of_name(name),
          :ok <- available_name(name) do
       conn
-      |> put_session(:current_user, %{name: name})
-      |> redirect(to: Routes.games_path(conn, :index))
+      |> SessionHelper.add_current_user(name)
+      |> redirect(to: Routes.game_path(conn, :index))
     else
       {:error, msg} ->
         conn
@@ -56,11 +57,8 @@ defmodule GamesWeb.AuthenticationController do
     end
   end
 
-  defp presence_of_name?(_name) do
-    # TODO complete looking for users when I add presence 
-    # GamesWeb.Presence.list("users")
-    # |> IO.inspect(label: "Presence")
-
-    false
+  defp presence_of_name?(name) do
+    GamesWeb.Presence.list(Games.Chat.global_chat())
+    |> Map.has_key?(name)
   end
 end

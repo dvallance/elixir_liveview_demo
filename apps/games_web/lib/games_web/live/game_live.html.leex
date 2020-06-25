@@ -1,0 +1,13 @@
+<div class="">
+  <%= unless @game_server do %>
+    <div>
+      Create a new game of...
+      <%= live_flash(@flash, :info) %>
+      <%= live_flash(@flash, :error) %>
+      <button phx-click="start_game" phx-value-game-type="pig">Pig</button>
+      <button phx-click="query">Royal Game of Ur</button>
+    </div>
+  <% else %>
+    <%= live_component @socket, GamesWeb.PigComponent, id: :game, current_user: @current_user, game_server: @game_server %>
+  <% end %>
+</div>

@@ -37,7 +37,8 @@ defmodule Games.MixProject do
   defp deps do
     [
       {:phoenix_pubsub, "~> 2.0"},
-      {:cachex, "~> 3.2"}
+      {:cachex, "~> 3.2"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 

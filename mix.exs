@@ -39,7 +39,10 @@ defmodule Games.Umbrella.MixProject do
   defp aliases do
     [
       # run `mix setup` in all child apps
-      setup: ["cmd mix setup"]
+      setup: ["cmd mix setup"],
+      test_games: ["cmd --app games mix test"], 
+      test_games_web: ["cmd --app games_web mix test"], 
+      test: ["test_games", "test_games_web"]
     ]
   end
 end
