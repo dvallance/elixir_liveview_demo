@@ -1,0 +1,30 @@
+.die-container {
+  width: 200px;
+  height: 200px;
+  perspective: 1000px;
+}
+
+.die-6 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  //transform: rotateX(0grad) rotateY(200grad);
+}
+
+.die-6-1, .die-6-2, .die-6-3, .die-6-4, .die-6-5, .die-6-6 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: solid black 1px;
+  text-align: center;
+  line-height: 200px;
+  background-color: white;
+}
+
+.die-6-1 { transform: rotateX(0grad) rotateY(0grad) translateZ(100px); color: red;}
+.die-6-2 { transform: rotateX(0grad) rotateY(100grad) translateZ(100px); color: blue;}
+.die-6-3 { transform: rotateX(0grad) rotateY(200grad) translateZ(100px); color: green;}
+.die-6-4 { transform: rotateX(0grad) rotateY(300grad) translateZ(100px); color: yellow;}
+.die-6-5 { transform: rotateX(100grad) rotateY(0grad) translateZ(100px); color: orange;}
+.die-6-6 { transform: rotateX(300grad) rotateY(0grad) translateZ(100px); color: pink;}

@@ -23,9 +23,76 @@ Hooks.ChatForm = {
     this.el.reset();
   }
 }
+
 Hooks.Chat = {
   updated() {
     console.dir(this.el);
+  }
+}
+
+Hooks.Test = {
+  updated() {
+    console.log("UPDATED");
+    console.dir(this.el);
+  },
+  mounted() {
+    console.log("MOUNTED");
+    console.dir(this.el);
+  }
+}
+
+Hooks.Rolling = {
+  diceKeyframes(dice_number) {
+    let x, y;
+    [x, y] = this.dicePosition(dice_number);
+    return [
+     {transform: "rotateY(0grad) rotateX(0grad)"},
+     {transform: `rotateX(${x}grad) rotateY(${y}grad)`},
+    ]
+  },
+  dicePosition(dice_number) {
+    return ((dice_numer) => {
+      switch(dice_number) {
+      case 1: return [400, 825] //425
+      case 2: return [400, 725]
+      case 3: return [400, 625]
+      case 4: return [400, 525]
+      case 5: return [680, 400]
+      case 6: return [480, 400]
+      }
+    })(dice_number)
+  },
+  positionDice(element) {
+    const rolled = parseInt(element.dataset.rolled);
+    if (!isNaN(rolled)) {
+      const die = element.querySelector('.js-die');
+      let x, y;
+      [x, y] = this.dicePosition(rolled);
+      
+      die.style.transform = `rotateX(${x}grad) rotateY(${y}grad)`
+    }
+  },
+  rollDice(element) {
+    const player_name = element.dataset.playerName;
+    const rolling_number = parseInt(element.dataset.rolling);
+    if (!isNaN(rolling_number)) {
+      const die = element.querySelector('.js-die');
+      const dice_animation = die.animate(this.diceKeyframes(rolling_number), {duration: 2000, iterations: 1, fill: "forwards", easing: "ease"});
+      dice_animation.onfinish = () => {
+        this.pushEventTo("#game", "rolled", {rolled: rolling_number, player_name: player_name});
+      }
+    }
+  },
+  mounted() {
+    this.positionDice(this.el);
+    this.rollDice(this.el);
+  },
+  updated() {
+    this.positionDice(this.el);
+    this.rollDice(this.el);
+  },
+  beforeUpdate() {
+    this.positionDice(this.el);
   }
 }
 

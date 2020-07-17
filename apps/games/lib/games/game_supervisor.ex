@@ -11,7 +11,6 @@ defmodule Games.GameSupervisor do
   end
 
   def start(game_type, %Games.User{} = user) when is_binary(game_type) do
-
     DynamicSupervisor.start_child(__MODULE__, {game_type(game_type), user})
   end
 
@@ -27,7 +26,7 @@ defmodule Games.GameSupervisor do
   """
   def game_server_for_user(%Games.User{} = user) do
     Enum.find(state_of_all_game_servers(), fn %{game: game} ->
-      Enum.member?(game.players, user)
+      Enum.member?(Map.keys(game.players), user)
     end)
   end
 

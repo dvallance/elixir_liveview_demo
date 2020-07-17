@@ -29,11 +29,12 @@ defmodule GamesWeb.GameLive do
           put_flash(socket, :error, @error_starting_game)
 
         {:ok, _pid} ->
-          assign(
-            socket,
-            :game_server,
-            Games.GameSupervisor.game_server_state(game_type, current_user(socket))
-          )
+          game_server = Games.GameSupervisor.game_server_state(game_type, current_user(socket))
+          # Here we'll subscribe to specific games PubSub channel.
+          # We unsubscribe first as a measure to prevent duplicate subscriptions.
+          Games.Server.unsubscribe(game_server)
+          Games.Server.subscribe(game_server)
+          assign(socket, :game_server, game_server)
       end
 
     {:noreply, socket}
@@ -44,11 +45,26 @@ defmodule GamesWeb.GameLive do
   sockets ':game_server' with the new values.
   """
   def handle_info(%Games.Server{} = server, socket) do
-    {:noreply, assign(socket, :game_server, server)}
+    socket =
+      socket
+      |> assign(:game_server, server)
+
+    {:noreply, socket}
   end
 
   defp recover_game_server(socket) do
     game_server = Games.GameSupervisor.game_server_for_user(current_user(socket))
-    assign(socket, :game_server, game_server)
+
+    socket =
+      socket
+      |> assign(:game_server, game_server)
+      |> subscribe_recovered_server(game_server)
+  end
+
+  defp subscribe_recovered_server(socket, nil), do: socket
+
+  defp subscribe_recovered_server(socket, game_server) do
+    if connected?(socket), do: Games.Server.subscribe(game_server)
+    socket
   end
 end

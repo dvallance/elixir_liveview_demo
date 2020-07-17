@@ -9,11 +9,7 @@ defmodule Games.PigServer do
   identify itself (since for this demo the players name is uniq).
   """
   def init(%Games.User{} = user) do
-    {:ok,
-     %Games.Server{
-       name: user.name,
-       game: Games.Pig.new(user)
-     }}
+    {:ok, Games.Server.new(user, Games.Pig)}
   end
 
   def start_link(%Games.User{} = user) do
@@ -37,8 +33,16 @@ defmodule Games.PigServer do
     GenServer.call(via(server), {:assign_opponent, opponent})
   end
 
-  def roll_for_first_turn(%Games.Server{} = server, %Games.User{} = user) do
-    GenServer.call(via(server), {:roll_for_first_turn, user})
+  def reset(%Games.Server{} = server) do
+    GenServer.call(via(server), :reset)
+  end
+
+  def roll(%Games.Server{} = server, %Games.User{} = user) do
+    GenServer.call(via(server), {:roll, user})
+  end
+
+  def rolled(%Games.Server{} = server, user_name, rolled) do
+    GenServer.call(via(server), {:rolled, user_name, rolled})
   end
 
   def handle_call({:assign_opponent, opponent}, _from, %Games.Server{} = server) do
@@ -47,8 +51,21 @@ defmodule Games.PigServer do
     {:reply, {:ok, server}, server}
   end
 
-  def handle_call({:roll_for_first_turn, %Games.User{} = user}, _from, %Games.Server{} = server) do
-    server = Games.Server.update_game(server, Games.Pig.roll_for_first_turn(server.game, user))
+  def handle_call(:reset, _from, %Games.Server{} = server) do
+    server = Games.Server.update_game(server, Games.Pig.new(server.created_by))
+
+    Games.Server.broadcast(server)
+    {:reply, {:ok, server}, server}
+  end
+
+  def handle_call({:roll, %Games.User{} = user}, _from, %Games.Server{} = server) do
+    server = Games.Server.update_game(server, Games.Pig.roll(server.game, user))
+    Games.Server.broadcast(server)
+    {:reply, {:ok, server}, server}
+  end
+
+  def handle_call({:rolled, user_name, rolled}, _from, %Games.Server{} = server) do
+    server = Games.Server.update_game(server, Games.Pig.rolled(server.game, user_name, rolled))
     Games.Server.broadcast(server)
     {:reply, {:ok, server}, server}
   end
