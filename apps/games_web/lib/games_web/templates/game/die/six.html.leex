@@ -4,7 +4,8 @@
      data-rolled="<%= @player_data.rolled %>"
      phx-hook="Rolling" 
      phx-target="#game"
-     <%= if Games.Pig.can_roll?(@server.game, @player), do: "phx-click=roll" %> > 
+     phx-click="roll"
+     <%# if Games.Pig.can_roll?(@server.game, @player), do: "phx-click=roll" %> > 
   <div class="die-6 js-die">
     <div class="die-6-1">1</div>
     <div class="die-6-2">2</div>

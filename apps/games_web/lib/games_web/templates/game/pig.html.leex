@@ -8,6 +8,11 @@
   <% end %>
 
   <pre>
+    <%= inspect(@game_server.game.msg) %>
+  </pre>
+  
+
+  <pre>
     <%= inspect(assigns, limit: :infinity, printable_limit: :infinity, pretty: true) %>
   </pre>
 
