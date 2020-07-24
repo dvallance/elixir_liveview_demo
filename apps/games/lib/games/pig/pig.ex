@@ -5,7 +5,7 @@ defmodule Games.Pig do
   # players is a map with the user / opponent as key and there player_data as value.
   defstruct [:msg, players: %{}, turn: :undecided]
 
-  @spec new(Games.PigServer.opponent()) :: %PlayerData{}
+  @spec new(Games.PigServer.opponent()) :: %Pig{}
   def new(%Games.User{} = user) do
     %Games.Pig{
       players: %{user => PlayerData.new()},
@@ -89,7 +89,7 @@ defmodule Games.Pig do
   end
 
   defp decide_first_turn(%Pig{} = pig) do
-    [player_and_data | players] = Enum.map(pig.players, &(&1))
+    [player_and_data | players] = Enum.map(pig.players, & &1)
 
     highest_roller(players, player_and_data)
     |> case do
@@ -173,6 +173,6 @@ defmodule Games.Pig do
   end
 
   defp update_msg(%Pig{} = pig, msg) do
-    %Pig{ pig | msg: [msg | pig.msg]}
+    %Pig{pig | msg: [msg | pig.msg]}
   end
 end

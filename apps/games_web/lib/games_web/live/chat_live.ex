@@ -4,6 +4,11 @@ defmodule GamesWeb.ChatLive do
   import GamesWeb.LiveHelper
 
   @impl true
+  def render(assigns) do
+    Phoenix.View.render(GamesWeb.ChatView, "chat.html", assigns)
+  end
+
+  @impl true
   def mount(_params, session, socket) do
     if connected?(socket) do
       Games.Chat.subscribe(:global)

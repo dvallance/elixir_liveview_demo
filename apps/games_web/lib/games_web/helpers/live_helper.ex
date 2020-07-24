@@ -1,5 +1,6 @@
 defmodule GamesWeb.LiveHelper do
   import Phoenix.LiveView, only: [assign: 3]
+
   @moduledoc """
   Shared methods for LiveView use.
   """

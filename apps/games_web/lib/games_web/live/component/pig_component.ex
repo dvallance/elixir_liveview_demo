@@ -5,13 +5,13 @@ defmodule GamesWeb.PigComponent do
     Phoenix.View.render(GamesWeb.GameView, "pig.html", assigns)
   end
 
-  def handle_event("select-computer-opponent", values, socket) do
+  def handle_event("select-computer-opponent", _values, socket) do
     Games.PigServer.assign_opponent(socket.assigns.game_server, Games.ComputerOpponent.new())
 
     {:noreply, socket}
   end
 
-  def handle_event("roll", values, socket) do
+  def handle_event("roll", _values, socket) do
     Games.PigServer.roll(socket.assigns.game_server, socket.assigns.current_user)
 
     {:noreply, socket}
@@ -23,7 +23,7 @@ defmodule GamesWeb.PigComponent do
     {:noreply, socket}
   end
 
-  def handle_event("reset", values, socket) do
+  def handle_event("reset", _values, socket) do
     Games.PigServer.reset(socket.assigns.game_server)
 
     {:noreply, socket}

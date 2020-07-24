@@ -6,6 +6,11 @@ defmodule GamesWeb.GameLive do
   @error_to_many_games "Sorry there is a limited number currently running games."
 
   @impl true
+  def render(assigns) do
+    Phoenix.View.render(GamesWeb.GameView, "game.html", assigns)
+  end
+
+  @impl true
   def mount(_params, session, socket) do
     socket =
       socket
@@ -40,6 +45,7 @@ defmodule GamesWeb.GameLive do
     {:noreply, socket}
   end
 
+  @impl true
   @doc """
   Games.Servers will broadcast there state changes so we just update the
   sockets ':game_server' with the new values.
@@ -55,10 +61,9 @@ defmodule GamesWeb.GameLive do
   defp recover_game_server(socket) do
     game_server = Games.GameSupervisor.game_server_for_user(current_user(socket))
 
-    socket =
-      socket
-      |> assign(:game_server, game_server)
-      |> subscribe_recovered_server(game_server)
+    socket
+    |> assign(:game_server, game_server)
+    |> subscribe_recovered_server(game_server)
   end
 
   defp subscribe_recovered_server(socket, nil), do: socket

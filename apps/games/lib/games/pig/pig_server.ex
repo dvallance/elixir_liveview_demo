@@ -28,7 +28,7 @@ defmodule Games.PigServer do
     {:via, Registry, {Games.Registry, user.name}}
   end
 
-  @spec assign_opponent(%Games.Server{}, opponent) :: {:ok, %Games.User{}} 
+  @spec assign_opponent(%Games.Server{}, opponent) :: {:ok, %Games.User{}}
   def assign_opponent(%Games.Server{} = server, opponent) do
     GenServer.call(via(server), {:assign_opponent, opponent})
   end

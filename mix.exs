@@ -40,8 +40,8 @@ defmodule Games.Umbrella.MixProject do
     [
       # run `mix setup` in all child apps
       setup: ["cmd mix setup"],
-      test_games: ["cmd --app games mix test"], 
-      test_games_web: ["cmd --app games_web mix test"], 
+      test_games: ["cmd --app games mix test"],
+      test_games_web: ["cmd --app games_web mix test"],
       test: ["test_games", "test_games_web"]
     ]
   end

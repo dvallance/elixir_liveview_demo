@@ -12,7 +12,7 @@ defmodule Games.Application do
       %{id: Cachex, start: {Cachex, :start_link, [:reserved_names]}},
       Games.ChatAgent,
       Games.GameSupervisor,
-      {Registry, keys: :unique, name: Games.Registry},
+      {Registry, keys: :unique, name: Games.Registry}
       # Start a worker by calling: Games.Worker.start_link(arg)
       # {Games.Worker, arg}
     ]

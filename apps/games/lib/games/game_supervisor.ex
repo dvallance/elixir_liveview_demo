@@ -16,7 +16,7 @@ defmodule Games.GameSupervisor do
 
   def state_of_all_game_servers() do
     DynamicSupervisor.which_children(__MODULE__)
-    |> Enum.map(fn {_, pid, _, _ } -> 
+    |> Enum.map(fn {_, pid, _, _} ->
       :sys.get_state(pid)
     end)
   end
