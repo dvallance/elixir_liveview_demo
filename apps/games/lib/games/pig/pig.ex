@@ -24,6 +24,11 @@ defmodule Games.Pig do
     |> roll(opponent)
   end
 
+  def lock_in_points(%Pig{} = pig, player) do
+    pig
+    |> update_player_data(player, &PlayerData.lock_in_points/1)
+  end
+
   # def can_roll?(%Pig{} = pig, %Games.ComputerOpponent{}), do: false
   # def can_roll?(%Pig{turn: :undecided} = pig, player), do: true
 
@@ -32,19 +37,18 @@ defmodule Games.Pig do
   end
 
   def turn?(%Pig{} = pig, %Games.User{} = user) do
-    pig.turn == user.name
+    pig.turn == user
   end
 
   @doc """
   Assigns a random number from 1-6 to the players data :rolling field.
   """
   def roll(%Pig{} = pig, player) do
-    if any_player_currently_rolling?(pig) do
-      # enforce 1 roll at a time across the board
+    if allowed_to_roll?(pig, player) do
+      manage_roll(pig, player)
+    else
       # no change
       pig
-    else
-      manage_roll(pig, player)
     end
   end
 
@@ -56,12 +60,30 @@ defmodule Games.Pig do
     |> manage_rolled(player)
   end
 
-  # @spec players_first_turn_roll(%Pig{}, Games.PigServer.opponent()) :: integer | nil
-  # def players_first_turn_roll(%Pig{} = pig, opponent) do
-  #  Map.get(pig.first_turn_rolls, opponent)
-  # end
-
   ### Private ###
+
+  # Enforce 1 roll at a time and only on the players turn, unless
+  # we haven't determined whos turn it is, then players can roll in 
+  # any order but still 1 roll at a time.
+  defp allowed_to_roll?(%Pig{turn: :undecided} = pig, player) do
+    !any_player_currently_rolling?(pig)
+    |> IO.inspect(label: "HERE")
+  end
+
+  defp allowed_to_roll?(%Pig{} = pig, player) do
+    !any_player_currently_rolling?(pig) and
+      players_turn(pig, player)
+      |> IO.inspect(label: "THERE")
+  end
+
+  defp assign_points(%Pig{} = pig, player) do
+    update_player_data(pig, player, &PlayerData.assign_points/1)
+  end
+
+  defp assign_turn(%Pig{} = pig, player) do
+    %Pig{pig | turn: player}
+    |> update_player_data(player, &PlayerData.reset_points/1)
+  end
 
   defp any_player_currently_rolling?(%Pig{} = pig) do
     Enum.any?(pig.players, fn {_player, player_data} ->
@@ -102,8 +124,9 @@ defmodule Games.Pig do
         |> update_msg("There was a tie for first place please role again.")
 
       {player, _player_data} ->
-        %Pig{pig | turn: player}
+        pig
         |> update_msg("#{player.name} gets to play first.")
+        |> assign_turn(player)
     end
   end
 
@@ -159,6 +182,24 @@ defmodule Games.Pig do
 
   defp manage_rolled(%Pig{turn: :undecided} = pig, player) do
     decide_first_turn(pig)
+  end
+
+  defp manage_rolled(%Pig{} = pig, player) do
+    case Map.get(pig.players, player).rolled do
+      1 ->
+        "TURN LOST"
+        |> IO.inspect(label: "")
+
+        pig
+
+      rolled ->
+        pig
+        |> assign_points(player)
+    end
+  end
+
+  defp players_turn(%Pig{} = pig, player) do
+    pig.turn == player
   end
 
   defp update_players(%Pig{} = pig, function) do

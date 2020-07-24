@@ -33,6 +33,10 @@ defmodule Games.PigServer do
     GenServer.call(via(server), {:assign_opponent, opponent})
   end
 
+  def lock_in_points(%Games.Server{} = server, player) do
+    GenServer.call(via(server), {:lock_in_points, player})
+  end
+
   def reset(%Games.Server{} = server) do
     GenServer.call(via(server), :reset)
   end
@@ -47,6 +51,13 @@ defmodule Games.PigServer do
 
   def handle_call({:assign_opponent, opponent}, _from, %Games.Server{} = server) do
     server = Games.Server.update_game(server, Games.Pig.assign_opponent(server.game, opponent))
+    Games.Server.broadcast(server)
+    {:reply, {:ok, server}, server}
+  end
+
+  def handle_call({:lock_in_points, player}, _from, %Games.Server{} = server) do
+    server = Games.Server.update_game(server, Games.Pig.lock_in_points(server.game, player))
+
     Games.Server.broadcast(server)
     {:reply, {:ok, server}, server}
   end

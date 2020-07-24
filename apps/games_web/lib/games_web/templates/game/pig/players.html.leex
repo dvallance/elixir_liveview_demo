@@ -7,8 +7,15 @@
         <%= player.name %>
       </div>
       <%= render GamesWeb.GameView, "die/six.html", server: @game_server, player: player, player_data: player_data %>
-      <button phx-click="lock_in_points" phx-target="#game" <%= unless Games.Pig.turn?(@game_server.game, @current_user), do: :disabled %>>Lock in Points!</button>
+
+      <br/>
+      <br/>
+      <button phx-click="lock-in-points" phx-target="#game" <%= unless Games.Pig.turn?(@game_server.game, @current_user), do: :disabled %>>Lock in Points!</button>
+      <div>turn <%= Games.Pig.turn?(@game_server.game, @current_user) %></div>
+      <div>Points</div>
+      <div><%= player_data.points %></div>
       <div>Total Score</div>
+      <div><%= player_data.score %></div>
       <div></div> 
   </div>
 <% end %>

@@ -5,6 +5,12 @@ defmodule GamesWeb.PigComponent do
     Phoenix.View.render(GamesWeb.GameView, "pig.html", assigns)
   end
 
+  def handle_event("lock-in-points", _values, socket) do
+    Games.PigServer.lock_in_points(socket.assigns.game_server, socket.assigns.current_user)
+
+    {:noreply, socket}
+  end
+
   def handle_event("select-computer-opponent", _values, socket) do
     Games.PigServer.assign_opponent(socket.assigns.game_server, Games.ComputerOpponent.new())
 
