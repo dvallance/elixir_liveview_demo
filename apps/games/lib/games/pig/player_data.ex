@@ -20,6 +20,10 @@ defmodule Games.Pig.PlayerData do
     %PlayerData{player_data | points: player_data.points + player_data.rolled}
   end
 
+  def has_won?(%PlayerData{} = player_data, points_to_reach) when is_integer(points_to_reach) do
+    player_data.points + player_data.score >= points_to_reach
+  end
+
   def lock_in_points(%PlayerData{} = player_data) do
     %PlayerData{player_data | score: player_data.score + player_data.points, points: 0}
   end

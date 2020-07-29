@@ -1,9 +1,12 @@
 defmodule Games.Pig do
   alias __MODULE__
+  alias Games.ComputerOpponent
   alias Games.Pig.PlayerData
 
+  @score_to_reach 100
+
   # players is a map with the user / opponent as key and there player_data as value.
-  defstruct [:msg, players: %{}, turn: :undecided]
+  defstruct [:msg, players: %{}, turn: :undecided, winner: nil]
 
   @spec new(Games.PigServer.opponent()) :: %Pig{}
   def new(%Games.User{} = user) do
@@ -18,7 +21,7 @@ defmodule Games.Pig do
     |> add_opponent(opponent)
   end
 
-  def assign_opponent(%Pig{} = pig, %Games.ComputerOpponent{} = opponent) do
+  def assign_opponent(%Pig{} = pig, %ComputerOpponent{} = opponent) do
     pig
     |> add_opponent(opponent)
     |> roll(opponent)
@@ -27,6 +30,7 @@ defmodule Games.Pig do
   def lock_in_points(%Pig{} = pig, player) do
     pig
     |> update_player_data(player, &PlayerData.lock_in_points/1)
+    |> assign_next_turn()
   end
 
   # def can_roll?(%Pig{} = pig, %Games.ComputerOpponent{}), do: false
@@ -67,13 +71,23 @@ defmodule Games.Pig do
   # any order but still 1 roll at a time.
   defp allowed_to_roll?(%Pig{turn: :undecided} = pig, player) do
     !any_player_currently_rolling?(pig)
-    |> IO.inspect(label: "HERE")
   end
 
   defp allowed_to_roll?(%Pig{} = pig, player) do
     !any_player_currently_rolling?(pig) and
       players_turn(pig, player)
-      |> IO.inspect(label: "THERE")
+  end
+
+  # Since this is just a demo I'll assume only two players and swap them.
+  # If I wanted to support multiple players (most code written to) I 
+  # would store a turn_list and rotate through it.
+  defp assign_next_turn(%Pig{} = pig) do
+    {next_player, _player_data} =
+      Enum.find(pig.players, fn {player, _player_data} ->
+        pig.turn != player
+      end)
+
+    assign_turn(pig, next_player)
   end
 
   defp assign_points(%Pig{} = pig, player) do
@@ -83,7 +97,14 @@ defmodule Games.Pig do
   defp assign_turn(%Pig{} = pig, player) do
     %Pig{pig | turn: player}
     |> update_player_data(player, &PlayerData.reset_points/1)
+    |> turn_assigned(player)
   end
+
+  defp turn_assigned(%Pig{} = pig, %ComputerOpponent{} = opponent) do
+    roll(pig, opponent)
+  end
+
+  defp turn_assigned(%Pig{} = pig, player), do: pig
 
   defp any_player_currently_rolling?(%Pig{} = pig) do
     Enum.any?(pig.players, fn {_player, player_data} ->
@@ -122,6 +143,7 @@ defmodule Games.Pig do
       :tie ->
         pig
         |> update_msg("There was a tie for first place please role again.")
+        |> tie_occured()
 
       {player, _player_data} ->
         pig
@@ -187,19 +209,70 @@ defmodule Games.Pig do
   defp manage_rolled(%Pig{} = pig, player) do
     case Map.get(pig.players, player).rolled do
       1 ->
-        "TURN LOST"
-        |> IO.inspect(label: "")
-
-        pig
+        turn_lost(pig, player)
 
       rolled ->
-        pig
-        |> assign_points(player)
+        assign_points(pig, player)
+        |> check_for_a_win(player)
+        |> points_acquired(player)
     end
   end
 
   defp players_turn(%Pig{} = pig, player) do
     pig.turn == player
+  end
+
+  defp turn_lost(%Pig{} = pig, player) do
+    update_player_data(pig, player, &PlayerData.reset_points/1)
+    |> assign_next_turn()
+  end
+
+  def check_for_a_win(%Pig{} = pig, player) do
+    player_data = Map.get(pig.players, player)
+
+    if PlayerData.has_won?(player_data, @score_to_reach) do
+      %Pig{pig | turn: :finished, winner: player}
+      |> update_msg("#{player.name} has won the game!")
+    else
+      pig
+    end
+  end
+
+  def points_acquired(%Pig{turn: :finished} = pig, player), do: pig
+
+  def points_acquired(%Pig{} = pig, %ComputerOpponent{} = opponent) do
+    # Simple AI for the computer.
+    # If we roll a 1 right now, lock in points otherwise keep rolling! 
+    Enum.random(1..6)
+    |> case do
+      1 -> lock_in_points(pig, opponent)
+      _ -> roll(pig, opponent)
+    end
+  end
+
+  def points_acquired(%Pig{} = pig, player), do: pig
+
+  def tie_occured(%Pig{} = pig) do
+    pig = clear_out_rolled(pig)
+
+    computer_opponent =
+      Enum.find_value(pig.players, fn {player, player_data} ->
+        if match?(%ComputerOpponent{}, player), do: player
+      end)
+
+    if computer_opponent do
+      roll(pig, computer_opponent)
+    else
+      pig
+    end
+  end
+
+  def clear_out_rolled(%Pig{} = pig) do
+    update_players(pig, fn players ->
+      Enum.reduce(players, %{}, fn {player, player_data}, acc ->
+        Map.put(acc, player, PlayerData.assign_rolled(player_data, nil))
+      end)
+    end)
   end
 
   defp update_players(%Pig{} = pig, function) do
