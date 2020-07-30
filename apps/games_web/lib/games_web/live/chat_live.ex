@@ -18,7 +18,7 @@ defmodule GamesWeb.ChatLive do
     socket =
       socket
       |> assign(:messages, Games.Chat.Message.all())
-      |> assign(:users, get_users_from_presence())
+      |> assign(:users, GamesWeb.Presence.retrieve_users_from_presence())
       |> assign_current_user(session)
 
     {:ok, socket}
@@ -66,13 +66,6 @@ defmodule GamesWeb.ChatLive do
       user_from_session(session).name,
       user_from_session(session)
     )
-  end
-
-  defp get_users_from_presence() do
-    GamesWeb.Presence.list(Games.Chat.global_chat())
-    |> Map.keys()
-    |> Enum.map(&User.new/1)
-    |> MapSet.new()
   end
 
   defp alter_users(users, data, join_or_leave) do

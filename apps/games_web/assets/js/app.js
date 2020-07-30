@@ -64,23 +64,22 @@ Hooks.Rolling = {
   },
   positionDice(element) {
     const rolled = parseInt(element.dataset.rolled);
-    if (!isNaN(rolled)) {
+    if (rolled > 0) {
       const die = element.querySelector('.js-die');
       let x, y;
       [x, y] = this.dicePosition(rolled);
-      
       die.style.transform = `rotateX(${x}grad) rotateY(${y}grad)`
     }
   },
   rollDice(element) {
-    const player_name = element.dataset.playerName;
     const rolling_number = parseInt(element.dataset.rolling);
-    if (!isNaN(rolling_number)) {
+    if (rolling_number > 0) {
       const die = element.querySelector('.js-die');
-      const dice_animation = die.animate(this.diceKeyframes(rolling_number), {duration: 2000, iterations: 1, fill: "forwards", easing: "ease"});
-      dice_animation.onfinish = () => {
-        this.pushEventTo("#game", "rolled", {rolled: rolling_number, player_name: player_name});
-      }
+      die.animate(this.diceKeyframes(rolling_number), {duration: 2000, iterations: 1, fill: "forwards", easing: "ease"});
+      //const dice_animation = die.animate(this.diceKeyframes(rolling_number), {duration: 2000, iterations: 1, fill: "forwards", easing: "ease"});
+      //dice_animation.onfinish = () => {
+      //  //this.pushEventTo("#game", "rolled", {rolled: rolling_number, player_name: player_name});
+      //}
     }
   },
   mounted() {

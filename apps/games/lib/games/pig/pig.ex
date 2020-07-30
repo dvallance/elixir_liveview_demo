@@ -1,9 +1,9 @@
 defmodule Games.Pig do
   alias __MODULE__
-  alias Games.ComputerOpponent
   alias Games.Pig.PlayerData
 
   @score_to_reach 100
+  @msg_tie "There was a tie for first place please role again."
 
   # players is a map with the user / opponent as key and there player_data as value.
   defstruct [:msg, players: %{}, turn: :undecided, winner: nil]
@@ -16,15 +16,15 @@ defmodule Games.Pig do
     }
   end
 
-  def assign_opponent(%Pig{} = pig, %Games.User{} = opponent) do
-    pig
-    |> add_opponent(opponent)
-  end
-
-  def assign_opponent(%Pig{} = pig, %ComputerOpponent{} = opponent) do
-    pig
-    |> add_opponent(opponent)
-    |> roll(opponent)
+  def assign_opponent(pig, opponent) do
+    if opponent_assigned?(pig) do
+      pig
+    else
+      update_players(pig, fn players ->
+        Map.put(players, opponent, PlayerData.new())
+      end)
+      |> update_msg("Opponent #{opponent.name} choosen.")
+    end
   end
 
   def lock_in_points(%Pig{} = pig, player) do
@@ -33,11 +33,12 @@ defmodule Games.Pig do
     |> assign_next_turn()
   end
 
-  # def can_roll?(%Pig{} = pig, %Games.ComputerOpponent{}), do: false
-  # def can_roll?(%Pig{turn: :undecided} = pig, player), do: true
-
   def opponent_assigned?(%Pig{} = pig) do
     length(Map.keys(pig.players)) > 1
+  end
+
+  def players_turn?(%Pig{} = pig, player) do
+    pig.turn == player
   end
 
   def turn?(%Pig{} = pig, %Games.User{} = user) do
@@ -49,18 +50,19 @@ defmodule Games.Pig do
   """
   def roll(%Pig{} = pig, player) do
     if allowed_to_roll?(pig, player) do
-      manage_roll(pig, player)
+      roll = Enum.random(1..6)
+
+      {:ok, update_player_data(pig, player, &PlayerData.assign_rolling(&1, roll))}
     else
-      # no change
-      pig
+      {:error, :not_allowed_to_roll}
     end
   end
 
-  def rolled(%Pig{} = pig, player_name, rolled) do
-    player = find_player(pig, player_name)
+  def rolled(%Pig{} = pig, player) do
+    pig = update_player_data(pig, player, &PlayerData.assign_rolled(&1))
 
-    update_player_data(pig, player, &PlayerData.assign_rolled(&1, rolled))
-    |> update_msg("#{player_name} rolled a #{rolled}.")
+    pig
+    |> update_msg("#{player.name} rolled a #{Map.get(pig.players, player).rolled}")
     |> manage_rolled(player)
   end
 
@@ -75,7 +77,7 @@ defmodule Games.Pig do
 
   defp allowed_to_roll?(%Pig{} = pig, player) do
     !any_player_currently_rolling?(pig) and
-      players_turn(pig, player)
+      players_turn?(pig, player)
   end
 
   # Since this is just a demo I'll assume only two players and swap them.
@@ -97,30 +99,12 @@ defmodule Games.Pig do
   defp assign_turn(%Pig{} = pig, player) do
     %Pig{pig | turn: player}
     |> update_player_data(player, &PlayerData.reset_points/1)
-    |> turn_assigned(player)
   end
-
-  defp turn_assigned(%Pig{} = pig, %ComputerOpponent{} = opponent) do
-    roll(pig, opponent)
-  end
-
-  defp turn_assigned(%Pig{} = pig, player), do: pig
 
   defp any_player_currently_rolling?(%Pig{} = pig) do
     Enum.any?(pig.players, fn {_player, player_data} ->
-      player_data.rolling != nil
+      player_data.rolling != 0
     end)
-  end
-
-  defp add_opponent(%Pig{} = pig, opponent) do
-    if opponent_assigned?(pig) do
-      pig
-    else
-      update_players(pig, fn players ->
-        Map.put(players, opponent, PlayerData.new())
-      end)
-      |> update_msg("Opponent #{opponent.name} choosen.")
-    end
   end
 
   defp complete_roll(pig, player) do
@@ -132,46 +116,45 @@ defmodule Games.Pig do
   end
 
   defp decide_first_turn(%Pig{} = pig) do
-    [player_and_data | players] = Enum.map(pig.players, & &1)
+    if everyone_has_rolled?(pig) do
+      case highest_roller(pig) do
+        :tie ->
+          update_msg(pig, @msg_tie)
+          |> clear_out_rolled()
 
-    highest_roller(players, player_and_data)
+        player ->
+          pig
+          |> update_msg("#{player.name} gets to play first.")
+          |> assign_turn(player)
+      end
+    else
+      pig
+    end
+  end
+
+  defp everyone_has_rolled?(%Pig{} = pig) do
+    Enum.all?(Map.values(pig.players), fn player_data ->
+      player_data.rolled > 0
+    end)
+  end
+
+  defp highest_roller(pig) do
+    Enum.reduce(pig.players, %{player: nil, rolled: 0, tie: false}, fn {player, player_data},
+                                                                       acc ->
+      cond do
+        player_data.rolled > acc.rolled ->
+          %{player: player, rolled: player_data.rolled, tie: false}
+
+        player_data.rolled == acc.rolled ->
+          Map.put(acc, :tie, true)
+
+        player_data.rolled < acc.rolled ->
+          acc
+      end
+    end)
     |> case do
-      :waiting_on_roll ->
-        pig
-        |> update_msg("Waiting on die role to determine who starts first.")
-
-      :tie ->
-        pig
-        |> update_msg("There was a tie for first place please role again.")
-        |> tie_occured()
-
-      {player, _player_data} ->
-        pig
-        |> update_msg("#{player.name} gets to play first.")
-        |> assign_turn(player)
-    end
-  end
-
-  defp highest_roller([player_and_data | []], player_and_data_highest_roll) do
-    rolled = elem(player_and_data, 1).rolled
-    highest_rolled = elem(player_and_data_highest_roll, 1).rolled
-
-    cond do
-      rolled == nil -> :waiting_on_roll
-      rolled > highest_rolled -> player_and_data
-      rolled == highest_rolled -> :tie
-      rolled < highest_rolled -> player_and_data_highest_roll
-    end
-  end
-
-  defp highest_roller([player_and_data | players], player_and_data_highest_roll) do
-    rolled = elem(player_and_data, 1).rolled
-    highest_rolled = elem(player_and_data_highest_roll, 1).rolled
-
-    cond do
-      rolled == nil -> :waiting_on_roll
-      rolled >= highest_rolled -> highest_roller(players, player_and_data)
-      true -> highest_roller(players, player_and_data_highest_roll)
+      %{tie: true} -> :tie
+      %{player: player} -> player
     end
   end
 
@@ -184,7 +167,7 @@ defmodule Games.Pig do
   defp manage_roll(%Pig{turn: :undecided} = pig, player) do
     # If the player has already rolled we don't allow another roll, unless
     # all players have rolled and we determine its a tie and reset there rolls.
-    if Map.get(pig.players, player).rolled == nil do
+    if Map.get(pig.players, player).rolled == 0 do
       complete_roll(pig, player)
     else
       # no change
@@ -214,12 +197,9 @@ defmodule Games.Pig do
       rolled ->
         assign_points(pig, player)
         |> check_for_a_win(player)
-        |> points_acquired(player)
-    end
-  end
 
-  defp players_turn(%Pig{} = pig, player) do
-    pig.turn == player
+        # |> points_acquired(player)
+    end
   end
 
   defp turn_lost(%Pig{} = pig, player) do
@@ -238,39 +218,10 @@ defmodule Games.Pig do
     end
   end
 
-  def points_acquired(%Pig{turn: :finished} = pig, player), do: pig
-
-  def points_acquired(%Pig{} = pig, %ComputerOpponent{} = opponent) do
-    # Simple AI for the computer.
-    # If we roll a 1 right now, lock in points otherwise keep rolling! 
-    Enum.random(1..6)
-    |> case do
-      1 -> lock_in_points(pig, opponent)
-      _ -> roll(pig, opponent)
-    end
-  end
-
-  def points_acquired(%Pig{} = pig, player), do: pig
-
-  def tie_occured(%Pig{} = pig) do
-    pig = clear_out_rolled(pig)
-
-    computer_opponent =
-      Enum.find_value(pig.players, fn {player, player_data} ->
-        if match?(%ComputerOpponent{}, player), do: player
-      end)
-
-    if computer_opponent do
-      roll(pig, computer_opponent)
-    else
-      pig
-    end
-  end
-
   def clear_out_rolled(%Pig{} = pig) do
     update_players(pig, fn players ->
       Enum.reduce(players, %{}, fn {player, player_data}, acc ->
-        Map.put(acc, player, PlayerData.assign_rolled(player_data, nil))
+        Map.put(acc, player, PlayerData.assign_rolled(player_data))
       end)
     end)
   end

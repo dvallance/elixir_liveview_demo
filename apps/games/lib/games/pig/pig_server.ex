@@ -1,7 +1,11 @@
 defmodule Games.PigServer do
   use GenServer
+  alias Games.ComputerOpponent
 
   @type opponent :: %Games.ComputerOpponent{} | %Games.User{}
+
+  # time to wait for rolling to complete.
+  @rolled_delay 2000
 
   @impl true
   @doc """
@@ -28,56 +32,111 @@ defmodule Games.PigServer do
     {:via, Registry, {Games.Registry, user.name}}
   end
 
-  @spec assign_opponent(%Games.Server{}, opponent) :: {:ok, %Games.User{}}
-  def assign_opponent(%Games.Server{} = server, opponent) do
-    GenServer.call(via(server), {:assign_opponent, opponent})
+  def cast(%Games.Server{} = server, term) do
+    GenServer.cast(via(server), term)
   end
 
-  def lock_in_points(%Games.Server{} = server, player) do
-    GenServer.call(via(server), {:lock_in_points, player})
-  end
-
-  def reset(%Games.Server{} = server) do
-    GenServer.call(via(server), :reset)
-  end
-
-  def roll(%Games.Server{} = server, %Games.User{} = user) do
-    GenServer.call(via(server), {:roll, user})
-  end
-
-  def rolled(%Games.Server{} = server, user_name, rolled) do
-    GenServer.call(via(server), {:rolled, user_name, rolled})
-  end
-
-  def handle_call({:assign_opponent, opponent}, _from, %Games.Server{} = server) do
+  def handle_cast({:assign_opponent, opponent}, %Games.Server{} = server) do
     server = Games.Server.update_game(server, Games.Pig.assign_opponent(server.game, opponent))
     Games.Server.broadcast(server)
-    {:reply, {:ok, server}, server}
+    {:noreply, server}
   end
 
-  def handle_call({:lock_in_points, player}, _from, %Games.Server{} = server) do
-    server = Games.Server.update_game(server, Games.Pig.lock_in_points(server.game, player))
+  def handle_cast({:lock_in_points, player}, %Games.Server{} = server) do
+    server =
+      Games.Pig.lock_in_points(server.game, player)
+      |> update_game_server(server)
 
-    Games.Server.broadcast(server)
-    {:reply, {:ok, server}, server}
+    {:noreply, server}
   end
 
-  def handle_call(:reset, _from, %Games.Server{} = server) do
+  def handle_cast({:reset, _user}, %Games.Server{} = server) do
     server = Games.Server.update_game(server, Games.Pig.new(server.created_by))
-
     Games.Server.broadcast(server)
-    {:reply, {:ok, server}, server}
+
+    {:noreply, server}
   end
 
-  def handle_call({:roll, %Games.User{} = user}, _from, %Games.Server{} = server) do
-    server = Games.Server.update_game(server, Games.Pig.roll(server.game, user))
-    Games.Server.broadcast(server)
-    {:reply, {:ok, server}, server}
+  # def handle_cast({:roll, user}, _from, %Games.Server{} = server) do
+  #  case roll(server, user) do
+  #    {:ok, server} -> {:reply, {:ok, server}, server}
+  #    error -> {:reply, error, server}
+  #  end
+  # end
+
+  # TODO fix this up
+  def handle_cast({:roll, user}, %Games.Server{} = server) do
+    case roll(server, user) do
+      {:ok, server} -> {:noreply, server}
+      error -> {:noreply, server}
+    end
   end
 
-  def handle_call({:rolled, user_name, rolled}, _from, %Games.Server{} = server) do
-    server = Games.Server.update_game(server, Games.Pig.rolled(server.game, user_name, rolled))
-    Games.Server.broadcast(server)
-    {:reply, {:ok, server}, server}
+  defp roll(server, user) do
+    with {:ok, pig} <- Games.Pig.roll(server.game, user),
+         server <- Games.Server.update_game(server, pig),
+         server <- Games.Server.broadcast(server),
+         timer_ref <- Process.send_after(self(), {:rolled, user}, @rolled_delay) do
+      {:ok, server}
+    else
+      error -> error
+    end
+  end
+
+  def handle_info({:rolled, user}, %Games.Server{} = server) do
+    server =
+      Games.Pig.rolled(server.game, user)
+      |> update_game_server(server)
+
+    {:noreply, server}
+  end
+
+  defp update_game_server(%Games.Pig{} = pig, %Games.Server{} = server) do
+    Games.Server.update_game(server, pig)
+    |> Games.Server.broadcast()
+    |> Games.Server.update_game(&subsequent_action/1)
+  end
+
+  # When the game is finished theres no need for any more action.
+  defp subsequent_action(%Games.Pig{turn: :finished} = pig), do: pig
+
+  # When the turn is undecided roll for computer player. 
+  defp subsequent_action(%Games.Pig{turn: :undecided} = pig) do
+    computer_action(pig, fn opponent ->
+      GenServer.cast(self(), {:roll, opponent})
+    end)
+  end
+
+  defp subsequent_action(%Games.Pig{turn: player_turn} = pig) do
+    computer_action(pig, fn opponent ->
+      if Games.Pig.players_turn?(pig, opponent) do
+        computers_turn(pig, opponent)
+      end
+    end)
+  end
+
+  defp computer_action(%Games.Pig{} = pig, function) do
+    computer_opponent = get_computer_opponent(pig)
+    if computer_opponent, do: function.(computer_opponent)
+    pig
+  end
+
+  def computers_turn(pig, opponent) do
+    player_data = Map.get(pig.players, opponent)
+
+    if player_data.points > 0 do
+      # decide to lock in points or roll
+      Enum.random(1..6)
+      |> case do
+        1 -> GenServer.cast(self(), {:lock_in_points, opponent})
+        _ -> GenServer.cast(self(), {:roll, opponent})
+      end
+    else
+      GenServer.cast(self(), {:roll, opponent})
+    end
+  end
+
+  defp get_computer_opponent(%Games.Pig{} = pig) do
+    Enum.find(Map.keys(pig.players), &match?(%ComputerOpponent{}, &1))
   end
 end

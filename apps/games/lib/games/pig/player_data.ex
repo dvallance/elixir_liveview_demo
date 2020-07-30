@@ -1,7 +1,7 @@
 defmodule Games.Pig.PlayerData do
   alias __MODULE__
 
-  defstruct [:rolled, rolling: nil, points: 0, score: 0]
+  defstruct rolled: 0, rolling: 0, points: 0, score: 0
 
   @spec new() :: %Games.Pig.PlayerData{}
   def new() do
@@ -12,8 +12,11 @@ defmodule Games.Pig.PlayerData do
     %PlayerData{player_data | rolling: roll}
   end
 
-  def assign_rolled(%PlayerData{} = player_data, rolled) do
-    %PlayerData{player_data | rolled: rolled, rolling: nil}
+  @doc """
+  Assigns the rolling value to rolled.
+  """
+  def assign_rolled(%PlayerData{} = player_data) do
+    %PlayerData{player_data | rolled: player_data.rolling, rolling: 0}
   end
 
   def assign_points(%PlayerData{} = player_data) do

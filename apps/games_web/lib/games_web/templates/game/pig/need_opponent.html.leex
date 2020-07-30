@@ -1,6 +1,18 @@
 <div>Choose your opponent!</div>
 
 <div>You can play solo vs the computer.</div>
-<button phx-click="select-computer-opponent" phx-target="#game">Computer</button>
+<button phx-click="select_computer_opponent" phx-target="#game">Computer</button>
 
 <div>You can invite any online user.</div>
+
+<%= f = form_for :opponent, "#", [phx_change: :search_user_opponent, phx_submit: :select_user_opponent, phx_target: "#game"] %>   
+  <%= text_input(f, :name, [list: "opponent_names", min: "2"]) %>
+
+  <datalist id="opponent_names">
+    <%= if assigns[:opponent_names] do %>
+      <%= for name <- @opponent_names do %>
+        <option><%= name %></option>
+      <% end %>
+    <% end %>
+  </datalist>
+</form>

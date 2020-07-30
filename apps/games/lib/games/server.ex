@@ -10,6 +10,13 @@ defmodule Games.Server do
     }
   end
 
+  @doc """
+    Updates the servers `:game` value.
+  """
+  def update_game(server, func) when is_function(func) do
+    %Games.Server{server | game: func.(server.game)}
+  end
+
   def update_game(server, game) do
     %Games.Server{server | game: game}
   end
@@ -22,8 +29,12 @@ defmodule Games.Server do
     Phoenix.PubSub.unsubscribe(Games.PubSub, channel(server))
   end
 
+  @doc """
+    Broadcasts out the latest server data via PubSub.
+  """
   def broadcast(%Games.Server{} = server) do
-    Phoenix.PubSub.broadcast(Games.PubSub, channel(server), server)
+    :ok = Phoenix.PubSub.broadcast(Games.PubSub, channel(server), server)
+    server
   end
 
   defp channel(%Games.Server{} = server) do
