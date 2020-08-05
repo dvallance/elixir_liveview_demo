@@ -2,6 +2,8 @@ defmodule GamesWeb.PigComponent do
   use GamesWeb, :live_component
 
   alias Games.PigServer
+  
+  @opponent_not_found "The opponent you mentioned wasn't found. Are they online?"
 
   def render(assigns) do
     Phoenix.View.render(GamesWeb.GameView, "pig.html", assigns)
@@ -41,7 +43,11 @@ defmodule GamesWeb.PigComponent do
         user.name == name
       end)
 
-    server_cast(socket, {:assign_opponent, opponent})
+    if opponent do
+      server_cast(socket, {:assign_opponent, opponent})
+    else
+      {:noreply, put_flash(socket, :error, @opponent_not_found)}
+    end
   end
 
   def handle_event("select_computer_opponent", _values, socket) do

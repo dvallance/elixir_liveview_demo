@@ -4,7 +4,7 @@
 <button phx-click="select_computer_opponent" phx-target="#game">Computer</button>
 
 <div>You can invite any online user.</div>
-
+<%= live_flash(@flash, :error) %>
 <%= f = form_for :opponent, "#", [phx_change: :search_user_opponent, phx_submit: :select_user_opponent, phx_target: "#game"] %>   
   <%= text_input(f, :name, [list: "opponent_names", min: "2"]) %>
 
