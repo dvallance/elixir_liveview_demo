@@ -1,0 +1,18 @@
+<section class="info">
+  <h1 class="info__title">Elixir LiveView Demo</h1>
+  <div class="info__engineer">
+    <span class="info__by">by</span>
+    <span class="info__name">David Vallance</span>
+  </div>
+
+  <div class="info__content">
+    A quick exploration of using Elixir LiveView; along with Phoenix Presence and 
+    PubSub to build something representative of a real world application.
+  </div>
+  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+    <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %>
+  <% end %>
+  <%= link("Logout", to: "/authentication/login", method: :delete) %>
+  <button phx-click="reset" phx-target="#game">Reset Server</button>
+</section>
+

@@ -16,6 +16,18 @@ defmodule Games.Pig do
     }
   end
 
+  # Enforce 1 roll at a time and only on the players turn, unless
+  # we haven't determined whos turn it is, then players can roll in 
+  # any order but still 1 roll at a time.
+  def allowed_to_roll?(%Pig{turn: :undecided} = pig, player) do
+    !any_player_currently_rolling?(pig)
+  end
+
+  def allowed_to_roll?(%Pig{} = pig, player) do
+    !any_player_currently_rolling?(pig) and
+      players_turn?(pig, player)
+  end
+
   def assign_opponent(pig, opponent) do
     if opponent_assigned?(pig) do
       pig
@@ -27,10 +39,19 @@ defmodule Games.Pig do
     end
   end
 
+  def has_points?(%Pig{} = pig, player) do
+    player_data = Map.get(pig.players, player)
+    player_data.points > 0
+  end
+
   def lock_in_points(%Pig{} = pig, player) do
     pig
     |> update_player_data(player, &PlayerData.lock_in_points/1)
     |> assign_next_turn()
+  end
+
+  def message_at(%Pig{} = pig, position) when is_integer(position) do
+    Enum.at(pig.msg, position)
   end
 
   def opponent_assigned?(%Pig{} = pig) do
@@ -67,18 +88,6 @@ defmodule Games.Pig do
   end
 
   ### Private ###
-
-  # Enforce 1 roll at a time and only on the players turn, unless
-  # we haven't determined whos turn it is, then players can roll in 
-  # any order but still 1 roll at a time.
-  defp allowed_to_roll?(%Pig{turn: :undecided} = pig, player) do
-    !any_player_currently_rolling?(pig)
-  end
-
-  defp allowed_to_roll?(%Pig{} = pig, player) do
-    !any_player_currently_rolling?(pig) and
-      players_turn?(pig, player)
-  end
 
   # Since this is just a demo I'll assume only two players and swap them.
   # If I wanted to support multiple players (most code written to) I 
@@ -156,11 +165,6 @@ defmodule Games.Pig do
       %{tie: true} -> :tie
       %{player: player} -> player
     end
-  end
-
-  defp find_player(%Pig{} = pig, player_name) do
-    Map.keys(pig.players)
-    |> Enum.find(&(&1.name == player_name))
   end
 
   # If the turn is undecided we are rolling to determine who goes first.

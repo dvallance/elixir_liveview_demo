@@ -1,0 +1,42 @@
+@keyframes flash_player {
+  0% {opacity: 1; }
+  50% {opacity: 0; }
+  100% {opacity: 1; }
+}
+
+@keyframes flash_opponent {
+  0% {opacity: 1; }
+  50% {opacity: 0; }
+  100% {opacity: 1; }
+}
+
+.pig__turn_indicator {
+  color: var(--grey-5);
+  transition: all 0.5s;
+  animation-delay: 0.5s;
+  animation-duration: .5s;
+  animation-iteration-count: 2;
+}
+
+.pig__turn_indicator--undecided {
+  //opacity: 0;
+}
+
+.pig__turn_indicator--player {
+  //animation-name: turn-indicator;
+  //animation-duration: 2s;
+  transform: rotate(-90deg);
+  animation-name: flash_player;
+}
+
+.pig__turn_indicator--opponent {
+  //animation-name: turn-indicator;
+  //animation-duration: 2s;
+  transform: rotate(90deg);
+  animation-name: flash_opponent;
+  //animation-name: flash_twice;
+  //animation-delay: 0.5s;
+  //animation-duration: .5s;
+  //animation-iteration-count: 2;
+}
+

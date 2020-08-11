@@ -1,11 +1,120 @@
-@import "./pig/board.scss";
+@import "./pig/turn_indicator.scss";
 
 .pig {
-
+  display: grid;
+  grid: 1fr / repeat(3, 1fr); 
+  column-gap: var(--space-6);
+  align-items: center;
+  justify-items: center;
+  padding-top: var(--space-6);
 }
 
-.pig-boards {
+.pig__player_board, .pig__opponent_board {
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pig__player_board {
+  grid-column: 1 / 2;
+}
+
+.pig__opponent_board {
+  grid-column: 3 / 4;
+}
+
+.pig__player_name {
+  font-size: var(--font-size-6);
+  margin-bottom: var(--space-7);
+}
+
+.pig__message {
+  grid-column: 1 / 6;
+  color: var(--grey-5);
+  //margin-top: var(--space-6);
+  //margin-bottom: var(--space-8);
+  font-size: var(--font-size-3);
+  font-weight: thin;
+  justify-self: stretch;
+  border-top: 1px solid var(--grey-4);
+  line-height: 1.8em;
+  padding-top: var(--space-3);
+}
+
+.pig__message p:nth-child(1) {
+  color: var(--grey-4);
+}
+
+.pig__scores {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+}
+
+.pig__points_title {
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: .5em; 
+  top: 70px;
+  font-size: var(--font-size-2);
+  color: var(--grey-6);
+}
+
+.pig__score_title {
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: .5em; 
+  top: 140px;
+  font-size: var(--font-size-2);
+  color: var(--grey-6);
+}
+
+.pig__points {
+  font-size: var(--font-size-9);
+  color: green;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--grey-3);
+  width: 100%;
+  text-align: center;
+  padding-bottom: var(--space-6);
+}
+
+.pig__score {
+  font-size: var(--font-size-10);
+  color: green;
+  margin-bottom: var(--space-6);
+}
+
+.pig__player_controls {
+  grid-column: 1 / 4;
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+
+@keyframes wobble {
+  0% {transform: rotate(0) translate(-50%, -50%); }
+  50% {transform: rotate(20deg); }
+  100% {transform: rotate(-20deg) translate(-100%, -100%); }
+}
+
+.pig__winner {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, -50%);
+  animation-name: wobble;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: linear;
+  font-size: var(--font-size-9);
+  font-color: var(--grey-9);
+  font-weight: bolder;
+  background-color: white;
+  padding: var(--space-9);
+  box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.06);
+  border-radius: 25px;
+  width: max-content;
 }

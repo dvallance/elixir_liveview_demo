@@ -1,0 +1,42 @@
+.l-page {
+  height: 100vh;
+  display: grid;
+  grid: 1fr / max-content 1fr; 
+  justify-items: start;
+  align-items: top;
+  overflow: scroll;
+}
+
+.l-info {
+  //display: grid;  
+  margin-right: var(--space-9);
+  margin-left: var(--space-9);
+}
+
+.l-main {
+  max-width: 1000px;
+  //background-color: red;
+  //height: 100vh;
+  display: grid;
+  grid: 1fr 250px / 1fr; 
+  //grid-template-rows: 1fr max-content;
+  align-items: center;
+  justify-items: center;
+  background-color: var(--grey-2);
+}
+
+.l-game {
+  //justify-self: center;
+}
+
+.l-chat {
+  background-color: var(--grey-8);
+  align-self: stretch;
+  display: grid;
+  align-items: stretch;
+  //justify-self: stretch;
+  //align-self: stretch;
+  //height: 100%;
+  //display: grid;
+  //grid: 1fr / 300px 1fr;
+}

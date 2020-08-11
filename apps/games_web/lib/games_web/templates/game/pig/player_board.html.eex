@@ -1,0 +1,8 @@
+<div class="<%= @class %>">
+    <div class="pig__player_name"><%= @player.name %></div>
+    <div class="pig__die">
+      <%= render GamesWeb.GameView, "die/six.html", player_data: @player_data %>
+    </div>
+    <div class="pig__points dave"><%= @player_data.points %></div>
+    <div class="pig__score"><%= @player_data.score %></div>
+</div>

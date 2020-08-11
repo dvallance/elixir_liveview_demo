@@ -1,18 +1,27 @@
-<div>Choose your opponent!</div>
+<div class="opponent">
+  <div class="opponent__title">Choose your opponent!</div>
 
-<div>You can play solo vs the computer.</div>
-<button phx-click="select_computer_opponent" phx-target="#game">Computer</button>
+  <div class="opponent__description">You can invite any online user.</div>
 
-<div>You can invite any online user.</div>
-<%= live_flash(@flash, :error) %>
-<%= f = form_for :opponent, "#", [phx_change: :search_user_opponent, phx_submit: :select_user_opponent, phx_target: "#game"] %>   
-  <%= text_input(f, :name, [list: "opponent_names", min: "2"]) %>
+  <p class="alert alert-info" role="alert"><%= live_flash(@flash, :info) %></p>
+  <p class="alert alert-danger" role="alert"><%= live_flash(@flash, :error) %></p>
 
-  <datalist id="opponent_names">
-    <%= if assigns[:opponent_names] do %>
-      <%= for name <- @opponent_names do %>
-        <option><%= name %></option>
+  <%= f = form_for :opponent, "#", [phx_change: :search_user_opponent, phx_submit: :select_user_opponent, phx_target: "#game"] %>   
+    <%= text_input(f, :name, [list: "opponent_names", min: "2", placeholder: "Start typing the a username...", class: "opponent__input"]) %>
+
+    <datalist id="opponent_names">
+      <%= if assigns[:opponent_names] do %>
+        <%= for name <- @opponent_names do %>
+          <option><%= name %></option>
+        <% end %>
       <% end %>
-    <% end %>
-  </datalist>
-</form>
+    </datalist>
+    
+    <input type="submit" class="button opponent__invite_button" value="Invite a User">
+  </form>
+
+  <div class="opponent__description">Feel like playing solo?</div>
+  <button phx-click="select_computer_opponent" phx-target="#game" class="button opponent__computer_button">
+    Play the Computer
+  </button>
+</div>

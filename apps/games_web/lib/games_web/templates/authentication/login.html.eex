@@ -1,9 +1,21 @@
-Login
+<div class="login">
+  <div class="login__title">
+    Please login.
+  </div>
 
-<%= form_for @conn, Routes.authentication_path(@conn, :log_in), fn f -> %>
-  <label>
-    Name: <%= text_input f, :name %>
-  </label>
+  <div class="login__desc">
+    You can login with any name you wish as long as it's not currently in use
+    by someone else.
+  </div>
 
-  <%= submit "Submit" %>
-<% end %>
+  
+  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
+
+  <%= form_for @conn, Routes.authentication_path(@conn, :log_in), fn f -> %>
+    <%= text_input f, :name, class: "login__input" %>
+    
+    <%= submit "Login", class: "button login__button" %>
+  <% end %>
+</div>

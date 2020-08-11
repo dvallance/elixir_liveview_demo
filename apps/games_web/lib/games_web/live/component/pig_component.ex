@@ -1,9 +1,31 @@
 defmodule GamesWeb.PigComponent do
   use GamesWeb, :live_component
+  alias GamesWeb.PigComponentHelper
 
   alias Games.PigServer
-  
+
   @opponent_not_found "The opponent you mentioned wasn't found. Are they online?"
+
+  def update(assigns, socket) do
+    socket =
+      PigComponentHelper.assignments(socket, assigns.current_user, assigns.game_server.game)
+
+    {:ok, assign(socket, assigns)}
+  end
+
+  # defp add_changes(socket) do
+  #  Map.keys(socket.changed)
+  #  |> IO.inspect(label: "CHANGED")
+
+  #  Map.has_key?(socket.changed, :player_points)
+  #  |> IO.inspect(label: "TEST")
+
+  #  if Map.has_key?(socket.changed, :player_points) do
+  #    assign(socket, :player_points_changed, "dave")
+  #  else
+  #    assign(socket, :player_points_changed, "")
+  #  end
+  # end
 
   def render(assigns) do
     Phoenix.View.render(GamesWeb.GameView, "pig.html", assigns)

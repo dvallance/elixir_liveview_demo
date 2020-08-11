@@ -1,0 +1,27 @@
+.login {
+  max-width: 500px;
+  padding: var(--space-10);
+}
+
+.login__title {
+  font-size: var(--font-size-6);
+  margin-bottom: var(--space-6);
+  color: var(--grey-8);
+}
+
+.login__desc {
+  margin-bottom: var(--space-3);
+  font-style: italic;
+  color: var(--grey-6);
+}
+
+.login__input {
+  width: 100%;
+  margin-bottom: var(--space-6);
+  padding: var(--space-3);
+}
+
+.login__button {
+  float: right;
+  min-width: var(--space-11);
+}

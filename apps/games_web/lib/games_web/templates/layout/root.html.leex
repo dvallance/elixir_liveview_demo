@@ -8,23 +8,16 @@
     <%= live_title_tag assigns[:page_title] || "Games", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <script src="https://kit.fontawesome.com/56cd5ab093.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-            <li><%= link("Logout", to: "/authentication/login", method: :delete) %></li>
-          </ul>
-        </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
-    </header>
-    <%= @inner_content %>
+    <div class="l-page">
+      <div class="l-info">
+        <%= Phoenix.View.render(GamesWeb.InfoView, "info.html", assigns) %>
+      </div>
+      <div class="l-main">
+        <%= @inner_content %>
+      </div>
+    </div>
   </body>
 </html>

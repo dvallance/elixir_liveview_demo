@@ -1,25 +1,28 @@
 <div class="chat" phx-hook="Chat">
-  <%= for message <- @messages do %>
-    <div class="chat__message">
-      <%# 
-        Messages have a type so we can expand on how to display them later
-        on, but for now I simply render the text given.
-      %>
-      <span class="chat__username"><%= message.user.name %></span>
-      <span class="chat__divider">&ndash;</span>
-      <span class="chat__text"><%= message.text %></span>
-    </div>
-  <% end %>
+  <div class="chat__users">
+    <div class="chat__users_title">ONLINE</div>
+    <%= for user <- @users do %>
+      <div class="user__name"><%= user.name %></div>
+    <% end %>
+  </div>
+
+  <div class="chat__messages">
+    <%= for message <- @messages do %>
+      <div class="chat__message">
+        <%# 
+          Messages have a type so we can expand on how to display them later
+          on, but for now I simply render the text given.
+        %>
+        <span class="chat__username"><%= message.user.name %></span>
+        <span class="chat__divider">&ndash;</span>
+        <span class="chat__text"><%= message.text %></span>
+      </div>
+    <% end %>
+  </div>
+
+
+  <%= f = form_for :chat, "#", phx_submit: "post_message", id: "chat__form", phx_hook: "ChatForm", class: "chat__form" %>
+    <%= text_input f, :text, class: "chat__form_input", placeholder: "Type global messages here..." %> 
+    <%= submit "Save", style: "display:none" %>
+  </form>
 </div>
-
-<%= f = form_for :chat, "#", phx_submit: "post_message", id: "chat_form", phx_hook: "ChatForm" %>
-  <%= text_input f, :text %> 
-  <%= submit "Save", style: "display:none" %>
-</form>
-
-<div class="users">
-  <%= for user <- @users do %>
-    <div class="user__name"><%= user.name %></div>
-  <% end %>
-</div>
-

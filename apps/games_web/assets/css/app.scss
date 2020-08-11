@@ -1,10 +1,21 @@
-/* This file is for your main application css. */
-@import "./phoenix.css";
-@import "../node_modules/nprogress/nprogress.css";
+@import url("https://fonts.googleapis.com/css2?family=Philosopher:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+@import "./normalize.scss";
+@import "./common.scss";
+@import "./layout.scss";
+@import "./variables.scss";
+@import "./common.scss";
+@import "./component/login.scss";
+@import "./component/game.scss";
+@import "./component/opponent.scss";
+@import "./component/info.scss";
 @import "./component/chat.scss";
 @import "./component/pig.scss";
-@import "./component/user.scss";
+//@import "./component/user.scss";
 @import "./component/die.scss";
+//@import "./phoenix.css";
+
+@import "../node_modules/nprogress/nprogress.css";
 
 /* LiveView specific classes for your customizations */
 .invalid-feedback {

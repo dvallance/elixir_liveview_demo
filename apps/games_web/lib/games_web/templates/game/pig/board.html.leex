@@ -1,0 +1,43 @@
+<div class="pig">
+  <%= render GamesWeb.GameView, "pig/player_board.html", player: @player, player_data: @player_data, class: "pig__player_board" %>
+
+  <div class="pig__scores">
+    <i class="fa fa-arrow-circle-up fa-3x pig__turn_indicator <%= @turn_indicator_class %>" aria-hidden="true"></i>
+    <div class="pig__points_title">Points</div>
+    <div class="pig__score_title">Score</div>
+  </div>
+  <%= render GamesWeb.GameView, "pig/player_board.html", player: @opponent, player_data: @opponent_data, class: "pig__opponent_board" %>
+
+  <div class="pig__player_controls">
+    <%= if Games.Pig.allowed_to_roll?(@game, @current_user) do %>
+      <button phx-target="#game" phx-target="#game" phx-click="roll" class="button">Roll <i class="fas fa-dice-d6"></i></button>
+    <% else %>
+      <button class="button">
+        Roll <i class="fas fa-spinner fa-spin"></i>
+      </button>
+    <% end %>
+
+    <%= if Games.Pig.has_points?(@game, @current_user) do %>
+      <button phx-click="lock_in_points" phx-target="#game" class="button">
+        Save Points <i class="fas fa-lock"></i>
+      </button>
+    <% else %>
+      <button class="button" disabled>
+        Lock in Points <i class="fas fa-lock"></i>
+      </button>
+    <% end %>
+  </div>
+
+  <div class="pig__message">
+    <p><%= Games.Pig.message_at(@game, 1) %></p>
+    <p><%= Games.Pig.message_at(@game, 0) %></p>
+  </div>
+
+  <%= if @winner do %>
+    <div class="pig__winner"><%= @winner.name %> wins!</div>
+    <div class="pig__player_controls">
+      <button phx-target="#game" phx-target="#game" phx-click="roll" class="button">Exit <i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  <% end %>
+</div>
+

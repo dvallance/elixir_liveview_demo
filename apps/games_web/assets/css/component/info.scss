@@ -1,0 +1,48 @@
+.info {
+  //margin: 50px;
+  background-color: var(--dave-rules); 
+  width: 460px;
+}
+
+.info__title {
+  font-family: "Philosopher", sans-serif; 
+  font-size: var(--font-size-9);
+  color: var(--grey-6);
+  margin: 0;
+  line-height: 1.2em;
+  margin-top: var(--space-8);
+}
+
+.info__engineer {
+  font-family: "Philosopher", sans-serif; 
+  padding-left: 5px;
+  font-weight: thin;
+  margin-bottom: var(--space-10);
+}
+
+.info__by {
+  color: var(--grey-6);
+  margin-right: var(--space-4);
+}
+
+.info__name {
+  font-size: 24px;
+  text-transform: uppercase;
+  color: var(--grey-7);
+  //font-weight: bold;
+  letter-spacing: .2rem;
+}
+
+.info__content {
+  //margin-top: var(--space-6);
+  margin-bottom: var(--space-8);
+  border-top: 1px solid var(--grey-3);
+  border-bottom: 1px solid var(--grey-3);
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-7);
+  line-height: 1.2em;
+  font-size: var(--font-size-4);
+  color: var(--grey-7);
+  margin-bottom: var(--space-10);
+}
+

@@ -1,0 +1,2 @@
+<%= live_render @conn, GamesWeb.GameLive, id: :game, container: {:div, class: "l-game"} %>
+<%= live_render @conn, GamesWeb.ChatLive, id: :chat, container: {:div, class: "l-chat"} %>

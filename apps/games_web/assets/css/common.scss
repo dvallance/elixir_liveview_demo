@@ -1,0 +1,38 @@
+/* This file is for your main application css. */
+html {
+  box-sizing: border-box;
+  color: var(--grey-7);
+  font-family: 'Roboto', sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.button {
+  background-color: var(--grey-9); 
+  color: var(--grey-3);
+  font-weight: bold;
+  padding: var(--space-4);
+  border-style: solid;
+  border-width: var(--space-2);
+  border-color: var(--grey-6);
+  min-width: var(--space-11);
+  transition: all 0.2s linear;
+}
+
+.button:hover:enabled {
+  background-color: var(--grey-1); 
+  color: var(--grey-9);
+  cursor: pointer;
+  //border-style: inset;
+  //border-width: var(--space-2);
+}
+
+.button:disabled {
+  background-color: var(--grey-4);
+}
+
+i { margin-left: var(--space-5); }
+
+p { margin: 0; }

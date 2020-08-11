@@ -1,13 +1,24 @@
-<div class="">
   <%= unless @game_server do %>
-    <div>
-      Create a new game of...
-      <%= live_flash(@flash, :info) %>
-      <%= live_flash(@flash, :error) %>
-      <button phx-click="start_game" phx-value-game-type="pig">Pig</button>
-      <button phx-click="query">Royal Game of Ur</button>
+    <div class="game">
+      <div class="game__title">
+        Give the game of Pig a try! 
+      </div>
+
+      <div class="game__desc">
+        Pig  is a simple “jeopardy” dice game. Where the dominant decision is
+        whether or not ot jeopardize previous gains by rolling for potential
+        greater gains; and winning by being the first to reach or exceed a goal
+        score.
+      </div>
+
+      <div class="game__img">
+      </div>
+
+      <p class="alert alert-info" role="alert"><%= live_flash(@flash, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= live_flash(@flash, :error) %></p>
+
+      <button phx-click="start_game" phx-value-game-type="pig" class="button game__button">Pig</button>
     </div>
   <% else %>
     <%= live_component @socket, GamesWeb.PigComponent, id: :game, current_user: @current_user, game_server: @game_server %>
   <% end %>
-</div>

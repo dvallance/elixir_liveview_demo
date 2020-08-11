@@ -17,15 +17,16 @@ defmodule GamesWeb.Router do
   scope "/", GamesWeb do
     pipe_through :browser
 
+    get "/", AuthenticationController, :login
     get "/authentication/login", AuthenticationController, :login
     post "/authentication/login", AuthenticationController, :log_in
     delete "/authentication/login", AuthenticationController, :log_out
   end
 
-  scope "/games", GamesWeb do
+  scope "/demo", GamesWeb do
     pipe_through [:browser, GamesWeb.LoggedInPlug]
-    # live "/", PageLive, :index
-    live "/", GameLive, :index
+    get "/games", DemoController, :games
+    #live "/games", GameLive, :index
   end
 
   # Other scopes may use custom stacks.

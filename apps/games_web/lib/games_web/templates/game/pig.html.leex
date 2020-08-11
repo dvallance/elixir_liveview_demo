@@ -1,19 +1,7 @@
 <div id="game">
-  <button phx-click="reset" phx-target="#game">Reset Server</button>
-
   <%= if Games.Pig.opponent_assigned?(@game_server.game) do %>
-      <%= render GamesWeb.GameView, "pig/players.html", assigns %>
+      <%= render GamesWeb.GameView, "pig/board.html", assigns %>
   <% else %>
     <%= render GamesWeb.GameView, "pig/need_opponent.html", assigns %>
   <% end %>
-
-  <pre>
-    <%= inspect(@game_server.game.msg) %>
-  </pre>
-  
-
-  <pre>
-    <%= inspect(assigns, limit: :infinity, printable_limit: :infinity, pretty: true) %>
-  </pre>
-
 </div>

@@ -1,9 +1,10 @@
 defmodule GamesWeb.GameLive do
   use GamesWeb, :live_view
+
   import GamesWeb.LiveHelper
 
   @error_starting_game "There was an issue starting the game."
-  @error_to_many_games "Sorry there is a limited number currently running games."
+  @error_to_many_games "Sorry too many games already running."
 
   @impl true
   def render(assigns) do
@@ -28,7 +29,7 @@ defmodule GamesWeb.GameLive do
           socket
 
         {:error, :max_children} ->
-          put_flash(socket, :info, @error_to_many_games)
+          put_flash(socket, :error, @error_to_many_games)
 
         {:error, _} ->
           put_flash(socket, :error, @error_starting_game)
@@ -51,9 +52,7 @@ defmodule GamesWeb.GameLive do
   sockets ':game_server' with the new values.
   """
   def handle_info(%Games.Server{} = server, socket) do
-    socket =
-      socket
-      |> assign(:game_server, server)
+    socket = assign(socket, :game_server, server)
 
     {:noreply, socket}
   end

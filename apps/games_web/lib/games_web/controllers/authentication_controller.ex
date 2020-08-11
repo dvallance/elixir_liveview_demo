@@ -18,7 +18,7 @@ defmodule GamesWeb.AuthenticationController do
          :ok <- available_name(name) do
       conn
       |> SessionHelper.add_current_user(name)
-      |> redirect(to: Routes.game_path(conn, :index))
+      |> redirect(to: Routes.demo_path(conn, :games))
     else
       {:error, msg} ->
         conn

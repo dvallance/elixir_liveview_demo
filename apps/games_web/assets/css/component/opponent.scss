@@ -1,0 +1,34 @@
+.opponent {
+  padding: var(--space-10);
+  max-width: 500px;
+}
+
+.opponent__title {
+  font-size: var(--font-size-6);
+  margin-bottom: var(--space-6);
+  color: var(--grey-8);
+}
+
+.opponent__description {
+  margin-bottom: var(--space-4);
+  font-style: italic;
+  color: var(--grey-6);
+  clear: both;
+}
+
+.opponent__input {
+  margin-bottom: var(--space-6);
+  padding: var(--space-3);
+  width: 100%;
+}
+
+.opponent__invite_button {
+  display: block;
+  float: right;
+  margin-bottom: var(--space-8);
+}
+
+.opponent__computer_button {
+  float: right;
+}
+
