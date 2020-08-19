@@ -10,9 +10,11 @@
     PubSub to build something representative of a real world application.
   </div>
   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-    <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %>
+    <%= link "Dashboard", to: Routes.live_dashboard_path(@conn, :home), class: "button button--subdued" %>
   <% end %>
-  <%= link("Logout", to: "/authentication/login", method: :delete) %>
-  <button phx-click="reset" phx-target="#game">Reset Server</button>
+  
+  <%= if GamesWeb.SessionHelper.current_user(@conn) do %>
+    <%= link("Logout", to: "/authentication/login", method: :delete, class: "button") %>
+  <% end %>
 </section>
 

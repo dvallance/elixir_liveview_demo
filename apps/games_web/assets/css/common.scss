@@ -9,6 +9,19 @@ html {
   box-sizing: inherit;
 }
 
+a.button {
+  text-decoration: none;
+}
+
+a:hover.button {
+  background-color: var(--grey-1); 
+  color: var(--grey-9);
+}
+
+.button--subdued {
+  opacity: 0.5 
+}
+
 .button {
   background-color: var(--grey-9); 
   color: var(--grey-3);
