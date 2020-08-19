@@ -36,9 +36,13 @@ defmodule Games.PigServer do
     GenServer.cast(via(server), term)
   end
 
-  def handle_cast({:assign_opponent, opponent}, %Games.Server{} = server) do
+  def handle_cast({:assign_opponent, user, opponent}, %Games.Server{} = server) do
     server = Games.Server.update_game(server, Games.Pig.assign_opponent(server.game, opponent))
+    # Broadcast to global chat the invite for the user.
+    Games.Chat.game_invite(user, opponent)
+
     Games.Server.broadcast(server)
+
     {:noreply, server}
   end
 

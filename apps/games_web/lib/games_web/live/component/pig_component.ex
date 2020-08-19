@@ -52,7 +52,7 @@ defmodule GamesWeb.PigComponent do
       end)
 
     if opponent do
-      server_cast(socket, {:assign_opponent, opponent})
+      server_cast(socket, {:assign_opponent, socket.assigns.current_user, opponent})
     else
       {:noreply, put_flash(socket, :error, @opponent_not_found)}
     end

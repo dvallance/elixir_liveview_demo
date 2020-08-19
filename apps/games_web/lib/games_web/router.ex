@@ -26,7 +26,7 @@ defmodule GamesWeb.Router do
   scope "/demo", GamesWeb do
     pipe_through [:browser, GamesWeb.LoggedInPlug]
     get "/games", DemoController, :games
-    #live "/games", GameLive, :index
+    # live "/games", GameLive, :index
   end
 
   # Other scopes may use custom stacks.

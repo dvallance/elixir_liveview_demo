@@ -26,9 +26,7 @@ defmodule GamesWeb.ChatLive do
 
   @impl true
   def handle_event("post_message", %{"chat" => %{"text" => text}} = _params, socket) do
-    Games.Chat.Message.new(socket.assigns.current_user, text)
-    |> Games.Chat.Message.save()
-    |> Games.Chat.broadcast_message(:global)
+    Games.Chat.global_text_message(socket.assigns.current_user, text)
 
     {:noreply, socket}
   end

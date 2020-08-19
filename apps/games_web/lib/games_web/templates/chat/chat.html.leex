@@ -8,15 +8,7 @@
 
   <div class="chat__messages">
     <%= for message <- @messages do %>
-      <div class="chat__message">
-        <%# 
-          Messages have a type so we can expand on how to display them later
-          on, but for now I simply render the text given.
-        %>
-        <span class="chat__username"><%= message.user.name %></span>
-        <span class="chat__divider">&ndash;</span>
-        <span class="chat__text"><%= message.text %></span>
-      </div>
+      <%= render_message(message) %>
     <% end %>
   </div>
 

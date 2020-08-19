@@ -48,6 +48,16 @@
   height: 180px;
 }
 
+.chat__text > a {
+  color: #008080;
+  padding: var(--space-3);
+  text-decoration: none;
+}
+
+.chat__text > a:hover {
+  font-weight: bold;
+}
+
 .chat__message {
   padding-left: var(--space-6);
   padding-right: var(--space-6);

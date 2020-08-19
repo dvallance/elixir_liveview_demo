@@ -31,7 +31,7 @@ defmodule GamesWeb.GameLive do
         {:error, :max_children} ->
           put_flash(socket, :error, @error_to_many_games)
 
-        {:error, error} ->
+        {:error, _error} ->
           put_flash(socket, :error, @error_starting_game)
 
         {:ok, _pid} ->

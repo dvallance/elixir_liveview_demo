@@ -7,11 +7,21 @@ defmodule Games.Chat do
   def global_chat(), do: @global_chat
 
   @doc """
-  Broadcast to Games.PubSub @global_chat.
+  Broadcasts a message in the gloal channel that invites a user to a game.
   """
-  # def broadcast_message(nil, _), do: nil
-  def broadcast_message(%Games.Chat.Message{} = message, :global) do
-    Phoenix.PubSub.broadcast(Games.PubSub, @global_chat, message)
+  def game_invite(user, invited_user) do
+    Games.Chat.Message.new_game_invite(user, invited_user)
+    |> Games.Chat.Message.save()
+    |> broadcast_message()
+  end
+
+  @doc """
+  Broadcasts a message in the gloal channel.
+  """
+  def global_text_message(user, text) when is_binary(text) do
+    Games.Chat.Message.new_text(user, text)
+    |> Games.Chat.Message.save()
+    |> broadcast_message()
   end
 
   @doc """
@@ -19,5 +29,11 @@ defmodule Games.Chat do
   """
   def subscribe(:global) do
     Phoenix.PubSub.subscribe(Games.PubSub, @global_chat)
+  end
+
+  ### PRIVATE ###
+
+  defp broadcast_message(%Games.Chat.Message{} = message) do
+    Phoenix.PubSub.broadcast(Games.PubSub, @global_chat, message)
   end
 end
