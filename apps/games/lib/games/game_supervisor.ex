@@ -7,7 +7,7 @@ defmodule Games.GameSupervisor do
 
   def init(_init_arg) do
     # Adding max_children to protect the demo server from to much load.
-    DynamicSupervisor.init(max_children: 1, strategy: :one_for_one)
+    DynamicSupervisor.init(max_children: 25, strategy: :one_for_one)
   end
 
   def start(game_type, %Games.User{} = user) when is_binary(game_type) do
@@ -20,6 +20,9 @@ defmodule Games.GameSupervisor do
       :sys.get_state(pid)
     end)
   end
+
+  def stop(nil), do: :ok
+  def stop(pid), do: DynamicSupervisor.terminate_child(__MODULE__, pid)
 
   @doc """
   Returns the first game found that has the user's name in the players list.

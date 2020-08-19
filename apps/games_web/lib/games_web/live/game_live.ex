@@ -31,7 +31,7 @@ defmodule GamesWeb.GameLive do
         {:error, :max_children} ->
           put_flash(socket, :error, @error_to_many_games)
 
-        {:error, _} ->
+        {:error, error} ->
           put_flash(socket, :error, @error_starting_game)
 
         {:ok, _pid} ->
@@ -44,6 +44,11 @@ defmodule GamesWeb.GameLive do
       end
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:exit}, socket) do
+    {:noreply, assign(socket, game_server: nil)}
   end
 
   @impl true

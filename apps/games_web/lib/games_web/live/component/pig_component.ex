@@ -13,20 +13,6 @@ defmodule GamesWeb.PigComponent do
     {:ok, assign(socket, assigns)}
   end
 
-  # defp add_changes(socket) do
-  #  Map.keys(socket.changed)
-  #  |> IO.inspect(label: "CHANGED")
-
-  #  Map.has_key?(socket.changed, :player_points)
-  #  |> IO.inspect(label: "TEST")
-
-  #  if Map.has_key?(socket.changed, :player_points) do
-  #    assign(socket, :player_points_changed, "dave")
-  #  else
-  #    assign(socket, :player_points_changed, "")
-  #  end
-  # end
-
   def render(assigns) do
     Phoenix.View.render(GamesWeb.GameView, "pig.html", assigns)
   end
@@ -82,5 +68,17 @@ defmodule GamesWeb.PigComponent do
 
   def handle_event("reset", _values, socket) do
     server_cast(socket, {:reset, socket.assigns.current_user})
+  end
+
+  def handle_event("exit", _values, socket) do
+    game = socket.assigns.game_server
+
+    # Shutdown the Pig Server
+    if game, do: Games.GameSupervisor.stop(GenServer.whereis(PigServer.via(game)))
+
+    # Tell parent GameLive to exit.
+    send(self(), {:exit})
+
+    {:noreply, socket}
   end
 end

@@ -2,7 +2,7 @@ defmodule Games.Pig do
   alias __MODULE__
   alias Games.Pig.PlayerData
 
-  @score_to_reach 100
+  @score_to_reach 10
   @msg_tie "There was a tie for first place please role again."
 
   # players is a map with the user / opponent as key and there player_data as value.
@@ -60,10 +60,6 @@ defmodule Games.Pig do
 
   def players_turn?(%Pig{} = pig, player) do
     pig.turn == player
-  end
-
-  def turn?(%Pig{} = pig, %Games.User{} = user) do
-    pig.turn == user
   end
 
   @doc """
