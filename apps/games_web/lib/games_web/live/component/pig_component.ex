@@ -59,7 +59,10 @@ defmodule GamesWeb.PigComponent do
   end
 
   def handle_event("select_computer_opponent", _values, socket) do
-    server_cast(socket, {:assign_opponent, Games.ComputerOpponent.new()})
+    server_cast(
+      socket,
+      {:assign_opponent, socket.assigns.current_user, Games.ComputerOpponent.new()}
+    )
   end
 
   def handle_event("roll", _values, socket) do

@@ -38,8 +38,11 @@ defmodule Games.PigServer do
 
   def handle_cast({:assign_opponent, user, opponent}, %Games.Server{} = server) do
     server = Games.Server.update_game(server, Games.Pig.assign_opponent(server.game, opponent))
-    # Broadcast to global chat the invite for the user.
-    Games.Chat.game_invite(user, opponent)
+
+    unless match?(%Games.ComputerOpponent{}, opponent) do
+      # Broadcast to global chat the invite for the user.
+      Games.Chat.game_invite(user, opponent)
+    end
 
     Games.Server.broadcast(server)
 
