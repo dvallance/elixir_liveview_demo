@@ -16,15 +16,21 @@ defmodule GamesWeb.ChatView do
 
     content_tag(:div, class: "chat__message") do
       [
-        content_tag(:span, message.user.name, class: "chat__username"),
+        user_name_tag(message.user.name),
         content_tag(:span, raw(" &ndash; "), class: "chat__divider"),
         content_tag(:span, class: "chat__text") do
           [
-            "Invited #{invited_user.name} to a game.",
+            "Invited ",
+            user_name_tag(invited_user.name),
+            " to a game.",
             link("Visit Game", to: "/demo/games")
           ]
         end
       ]
     end
+  end
+
+  defp user_name_tag(name) do
+    content_tag(:span, name, class: "chat__username")
   end
 end
