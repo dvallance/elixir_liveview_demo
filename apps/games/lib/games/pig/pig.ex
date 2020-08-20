@@ -83,6 +83,13 @@ defmodule Games.Pig do
     |> manage_rolled(player)
   end
 
+  # Gets the first {player, data} thats not the one passed in.
+  def other_player(%Pig{} = pig, player) do
+    Enum.find(pig.players, fn {player_x, _player_data} ->
+      player_x != player
+    end)
+  end
+
   ### Private ###
 
   # Since this is just a demo I'll assume only two players and swap them.

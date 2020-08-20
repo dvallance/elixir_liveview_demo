@@ -109,8 +109,9 @@ defmodule Games.PigServer do
 
   # When the turn is undecided roll for computer player. 
   defp subsequent_action(%Games.Pig{turn: :undecided} = pig) do
-    computer_action(pig, fn opponent ->
-      GenServer.cast(self(), {:roll, opponent})
+    computer_action(pig, fn computer ->
+      {_player, player_data} = Games.Pig.other_player(pig, computer)
+      if player_data.rolled > 0, do: GenServer.cast(self(), {:roll, computer})
     end)
   end
 
