@@ -4,7 +4,7 @@
         <button phx-target="#game" phx-target="#game" phx-click="roll" class="button">Roll <i class="fas fa-dice-d6"></i></button>
       <% else %>
         <button class="button">
-          Roll <i class="fas fa-spinner fa-spin"></i>
+          Roll <i class="fas fa-hourglass"></i>
         </button>
       <% end %>
 
