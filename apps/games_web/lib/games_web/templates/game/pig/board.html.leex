@@ -10,9 +10,10 @@
 
   <%= render GamesWeb.GameView, "pig/player_controls.html", game: @game, current_user: @current_user %>
 
-  <div class="pig__message">
-    <p><%= Games.Pig.message_at(@game, 1) %></p>
-    <p><%= Games.Pig.message_at(@game, 0) %></p>
+  <div class="pig__messages">
+    <%= for message <- @game.msg do %>
+    <p><%= message %></p>
+  <% end %>
   </div>
 </div>
 

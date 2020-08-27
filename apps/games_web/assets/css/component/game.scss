@@ -16,9 +16,19 @@
 }
 
 .game__img {
-
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-8);
+  width: 200px;
+  height: 130px;
 }
 
 .game__button {
+  margin-top: var(--space-8);
   float: right;
 }
+
+.game__rules {
+  position: relative;
+};

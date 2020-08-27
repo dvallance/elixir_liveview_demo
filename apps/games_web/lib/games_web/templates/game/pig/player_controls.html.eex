@@ -17,6 +17,17 @@
           Lock in Points <i class="fas fa-lock"></i>
         </button>
       <% end %>
+      <button class="button button--subdued" onclick="toggleInstructions(this)">
+        Instructions <i class="fas fa-question-circle"></i>
+      </button>
+      <div class="pig__rules js-instructions hidden">
+        <p class="pig__rules_title">RULES</p>
+        <p>Roll to determine who plays first.</p>
+        <p>On your turn roll to accumulate points.</p>
+        <p>If you roll a 1 you lose your accumulated points and your turn.</p>
+        <p>Lock in your points to add to your score and end your turn.</p>
+        <p>First player to reach a score of 50 wins!</p>
+      </div>
     <% else %>
       <div class="pig__winner"><%= @game.winner.name %> wins!</div>
       <button phx-target="#game" phx-target="#game" phx-click="exit" class="button">Exit <i class="fas fa-sign-out-alt"></i></button>

@@ -1,5 +1,9 @@
   <%= unless @game_server do %>
     <div class="game">
+      <div class="">
+        <img src="/images/pig.png" class="game__img">
+      </div>
+
       <div class="game__title">
         Give the game of Pig a try! 
       </div>
@@ -11,8 +15,6 @@
         score.
       </div>
 
-      <div class="game__img">
-      </div>
 
       <p class="alert alert-info" role="alert"><%= live_flash(@flash, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= live_flash(@flash, :error) %></p>

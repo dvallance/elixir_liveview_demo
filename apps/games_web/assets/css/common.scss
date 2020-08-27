@@ -18,6 +18,25 @@ a:hover.button {
   color: var(--grey-9);
 }
 
+a {
+  //font-style: italic;
+  font-weight: bold;
+  color: var(--grey-8);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.js-instructions {
+  transition: all 1s;
+}
+
 .button--subdued {
   opacity: 0.5 
 }

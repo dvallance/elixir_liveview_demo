@@ -9,6 +9,29 @@
   padding-top: var(--space-6);
 }
 
+.pig__rules {
+  background-color: white;
+  padding: var(--space-5);
+  border: 1px solid var(--grey-4);
+  z-index: 1000;
+  position: absolute;
+  width: 600px;
+  height: 200px;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  line-height: 1.5em;
+  color: var(--grey-8);
+}
+
+.pig__rules_title {
+  display: block;
+  letter-spacing: .5em;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: var(--space-5);
+}
+
 .pig__player_board, .pig__opponent_board {
   display: flex;
   flex-direction: column;
@@ -25,10 +48,10 @@
 
 .pig__player_name {
   font-size: var(--font-size-6);
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-9);
 }
 
-.pig__message {
+.pig__messages {
   grid-column: 1 / 6;
   color: var(--grey-5);
   //margin-top: var(--space-6);
@@ -39,10 +62,10 @@
   border-top: 1px solid var(--grey-4);
   line-height: 1.8em;
   padding-top: var(--space-3);
-}
-
-.pig__message p:nth-child(1) {
-  color: var(--grey-4);
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100px;
+  overflow: auto;
 }
 
 .pig__scores {
@@ -72,8 +95,8 @@
 
 .pig__points {
   font-size: var(--font-size-9);
-  color: green;
-  margin-top: var(--space-8);
+  color: var(--grey-8);
+  margin-top: var(--space-9);
   margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--grey-3);
   width: 100%;
@@ -83,14 +106,16 @@
 
 .pig__score {
   font-size: var(--font-size-10);
-  color: green;
+  color: var(--grey-9);
   margin-bottom: var(--space-6);
+  font-weight: bold;
 }
 
 .pig__player_controls {
   grid-column: 1 / 4;
   padding-top: var(--space-8);
   padding-bottom: var(--space-8);
+  position: relative;
 }
 
 @keyframes wobble {
@@ -102,7 +127,7 @@
 .pig__winner {
   position: absolute;
   left: 50%;
-  top: 20%;
+  top: -150%;
   transform: translate(-50%, -50%);
   animation-name: wobble;
   animation-duration: 4s;

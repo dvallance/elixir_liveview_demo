@@ -17,12 +17,14 @@
       <% end %>
     </datalist>
     
-    <input type="submit" class="button opponent__invite_button" value="Invite a User">
+    <button type="submit" class="button opponent__invite_button">
+      Invite a User <i class="fas fa-user"></i>
+    </button>
   </form>
 
   <div class="opponent__description">Feel like playing solo?</div>
   <button phx-click="select_computer_opponent" phx-target="#game" class="button opponent__computer_button">
-    Play the Computer
+    Play the Computer <i class="fas fa-robot"></i>
   </button>
 
   <button phx-click="exit" phx-target="#game" class="button opponent__cancel">

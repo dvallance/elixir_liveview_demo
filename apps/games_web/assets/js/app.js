@@ -109,3 +109,9 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
+
+window.toggleInstructions = (element) => {
+  const elem = element.parentNode.querySelector(".js-instructions");
+  elem.classList.toggle("hidden");
+  console.dir(elem);
+};

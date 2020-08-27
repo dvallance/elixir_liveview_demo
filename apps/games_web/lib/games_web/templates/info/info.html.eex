@@ -6,8 +6,17 @@
   </div>
 
   <div class="info__content">
-    A quick exploration of using Elixir LiveView; along with Phoenix Presence and 
-    PubSub to build something representative of a real world application.
+    <p>I created this demo to explore Elixir LiveView, and figure out how to build an application with it.</p>
+    <p>The goal was to leverage at least two LiveViews and a LiveComponent to see how they all work together and with the frontend views.</p>
+
+    <p>There is a ChatLive for the global chat feature, and a GameLive and PigComponent for representing the game selection and the game of pig itself.</p>
+
+
+    <p>The demo is best viewed on a desktop, as I didn't take the time to design a small screen variant, and with a modern browser.</p>
+
+    <p>View the source code on github here:<br/><a target="_blank" href="https://github.com/dvallance/elixir_liveview_demo">Elixir Liveview Demo</a></p>
+
+    <p>I can be reached on LinkedIn here:<br/><a target="_blank" href="https://www.linkedin.com/in/david-j-vallance">LinkedIn Profile</a></p>
   </div>
   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
     <%= link "Dashboard", to: Routes.live_dashboard_path(@conn, :home), class: "button button--subdued" %>

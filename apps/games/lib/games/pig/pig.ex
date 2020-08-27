@@ -2,7 +2,7 @@ defmodule Games.Pig do
   alias __MODULE__
   alias Games.Pig.PlayerData
 
-  @score_to_reach 10
+  @score_to_reach 50 
   @msg_tie "There was a tie for first place please role again."
 
   # players is a map with the user / opponent as key and there player_data as value.
