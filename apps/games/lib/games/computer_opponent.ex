@@ -10,6 +10,6 @@ defmodule Games.ComputerOpponent do
   @spec new() :: %Games.ComputerOpponent{}
   def new(), do: %Games.ComputerOpponent{name: "Robo (computer)"}
 
-  def is_computer?(%Games.ComputerOpponent{} = opponent), do: true
+  def is_computer?(%Games.ComputerOpponent{}), do: true
   def is_computer?(_), do: false
 end

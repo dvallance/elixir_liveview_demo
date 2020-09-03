@@ -37,6 +37,8 @@ defmodule Games.Server do
     server
   end
 
+  # Gets the PubSub topic/channel for a specific server, which is the name of
+  # the server.
   defp channel(%Games.Server{} = server) do
     "game_server:#{server.name}"
   end

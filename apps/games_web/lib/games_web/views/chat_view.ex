@@ -1,6 +1,9 @@
 defmodule GamesWeb.ChatView do
   use GamesWeb, :view
 
+  @doc """
+  Responsible for correctly rendering messages of potentially various types.
+  """
   def render_message(%Games.Chat.Message{type: :text} = message) do
     content_tag(:div, class: "chat__message") do
       [
@@ -30,6 +33,7 @@ defmodule GamesWeb.ChatView do
     end
   end
 
+  # Common tag for the user name of a message.
   defp user_name_tag(name) do
     content_tag(:span, name, class: "chat__username")
   end

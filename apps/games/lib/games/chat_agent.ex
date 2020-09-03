@@ -1,7 +1,7 @@
 defmodule Games.ChatAgent do
   alias Games.Chat.Message
   use Agent
-  @message_limit 500
+  @message_limit 50
 
   @moduledoc """
   Simple way to store all messages. 

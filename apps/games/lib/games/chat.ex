@@ -1,4 +1,8 @@
 defmodule Games.Chat do
+  @moduledoc """
+  Chat related functions.
+  """
+
   @global_chat "chat:global"
 
   @doc """

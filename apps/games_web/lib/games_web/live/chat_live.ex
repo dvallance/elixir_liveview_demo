@@ -1,4 +1,7 @@
 defmodule GamesWeb.ChatLive do
+  @moduledoc """
+  LiveView for global chat feature.
+  """
   use GamesWeb, :live_view
   alias Games.User
   import GamesWeb.LiveHelper
@@ -9,6 +12,10 @@ defmodule GamesWeb.ChatLive do
   end
 
   @impl true
+  @doc """
+  Loads all messages from our message store, and all users from Presence so we
+  can display global chat messages and show which users are logged in.
+  """
   def mount(_params, session, socket) do
     if connected?(socket) do
       Games.Chat.subscribe(:global)
@@ -25,6 +32,9 @@ defmodule GamesWeb.ChatLive do
   end
 
   @impl true
+  @doc """
+  Handles posting of messages from our frontend form.
+  """
   def handle_event("post_message", %{"chat" => %{"text" => text}} = _params, socket) do
     Games.Chat.global_text_message(socket.assigns.current_user, text)
 
@@ -32,6 +42,9 @@ defmodule GamesWeb.ChatLive do
   end
 
   @impl true
+  @doc """
+  Handler for global chat PubSub broadcasts.
+  """
   def handle_info(%Games.Chat.Message{} = message, socket) do
     socket = update(socket, :messages, &[message | &1])
 
@@ -39,6 +52,10 @@ defmodule GamesWeb.ChatLive do
   end
 
   @impl true
+  @doc """
+  Handles GamesWeb.Presence messages, which has a payload of the joining and
+  leaving users.
+  """
   def handle_info(
         %{
           topic: _topic,
@@ -57,6 +74,9 @@ defmodule GamesWeb.ChatLive do
     {:noreply, socket}
   end
 
+  # Sets up this LiveView socket as the representation of the current user
+  # in the global chat topic, using the current user as the key, and the current
+  # user data structure, as the meta.
   defp track_user_by_presence(session) do
     GamesWeb.Presence.track(
       self(),
@@ -66,6 +86,8 @@ defmodule GamesWeb.ChatLive do
     )
   end
 
+  # Adds or removes users based on "presence_diff" data, so they can be added
+  # to the socket and be seen joining or leaving the chat.
   defp alter_users(users, data, join_or_leave) do
     data
     |> Map.keys()

@@ -19,25 +19,9 @@ import {LiveSocket} from "phoenix_live_view"
 
 let Hooks = {}
 Hooks.ChatForm = {
+  // When a message is posted we clear the entry form.
   updated() {
     this.el.reset();
-  }
-}
-
-Hooks.Chat = {
-  updated() {
-    console.dir(this.el);
-  }
-}
-
-Hooks.Test = {
-  updated() {
-    console.log("UPDATED");
-    console.dir(this.el);
-  },
-  mounted() {
-    console.log("MOUNTED");
-    console.dir(this.el);
   }
 }
 

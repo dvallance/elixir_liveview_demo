@@ -3,6 +3,10 @@ defmodule GamesWeb.LoggedInPlug do
 
   def init(options), do: options
 
+  @doc """
+  A Plug to redirect to the login page if the `current_user` is not available
+  in the session.
+  """
   def call(conn, _opt) do
     case get_session(conn, :current_user) do
       nil ->

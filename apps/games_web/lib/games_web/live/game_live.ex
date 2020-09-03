@@ -1,4 +1,8 @@
 defmodule GamesWeb.GameLive do
+  @moduledoc """
+  LiveView for games.
+  """
+
   use GamesWeb, :live_view
 
   import GamesWeb.LiveHelper
@@ -12,6 +16,9 @@ defmodule GamesWeb.GameLive do
   end
 
   @impl true
+  @doc """
+  Assigns the current_user from the session and recovers any in progress game.
+  """
   def mount(_params, session, socket) do
     socket =
       socket
@@ -22,6 +29,11 @@ defmodule GamesWeb.GameLive do
   end
 
   @impl true
+  @doc """
+    Handler for the "start_game" event. Currently there is no cleanup of
+    abondoned games, so for the demo I'll add a max games to prevent to many
+    from piling up.
+  """
   def handle_event("start_game", %{"game-type" => game_type}, socket) do
     socket =
       case Games.GameSupervisor.start(game_type, current_user(socket)) do
@@ -47,12 +59,17 @@ defmodule GamesWeb.GameLive do
   end
 
   @impl true
+  @doc """
+  Exiting the game sets the sockets `game_server` to nil.
+  """
   def handle_info({:exit}, socket) do
     {:noreply, assign(socket, game_server: nil)}
   end
 
   @impl true
   @doc """
+  PubSub handler.
+
   Games.Servers will broadcast there state changes so we just update the
   sockets ':game_server' with the new values.
   """
@@ -62,6 +79,7 @@ defmodule GamesWeb.GameLive do
     {:noreply, socket}
   end
 
+  # Assigns a `game_server` to the socket, which can be nil or an actual game.
   defp recover_game_server(socket) do
     game_server = Games.GameSupervisor.game_server_for_user(current_user(socket))
 
@@ -70,6 +88,7 @@ defmodule GamesWeb.GameLive do
     |> subscribe_recovered_server(game_server)
   end
 
+  # Subscribes to a game server via PubSub.
   defp subscribe_recovered_server(socket, nil), do: socket
 
   defp subscribe_recovered_server(socket, game_server) do
